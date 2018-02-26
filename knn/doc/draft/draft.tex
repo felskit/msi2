@@ -4,8 +4,13 @@
 \usepackage[utf8]{inputenc}
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage{float}
+\usepackage{tabularx}
 \usepackage[hidelinks]{hyperref}
 \usepackage[polish]{babel}
+
+\def\arraystretch{1.5}
+\renewcommand{\thesection}{\arabic{section}.}
 
 \begin{document}
 
@@ -17,6 +22,7 @@
 \author{Bartłomiej Dach, Tymon Felski}
 \maketitle
 
+\noindent
 Niniejszy dokument zawiera informacje wstępne dotyczące pierwszego projektu, którego celem jest zaimplementowanie algorytmu $k$ najbliższych sąsiadów ($k$-NN, ang. \emph{$k$ nearest neighbors}) i~analiza jego działania dla~dostarczonych danych treningowych.
 
 \section{Skład grupy}
@@ -31,8 +37,57 @@ Projekt realizowany będzie w~dwuosobowej grupie, w~składzie:
 \section{Opis algorytmu}
 
 \section{Wybrane technologie}
+Językiem programowania, który zdecydowano się wykorzystać, jest język skryptowy \textbf{Python} w wersji 3.5.2. Jest o~uwarunkowane między innymi sporymi możliwościami tego języka w~zakresie przetwarzania i~analizy danych, wygodę programowania i~przenośność stworzonych rozwiązań. Wybrano także pythonowe moduły, mające wspomóc pracę z~dużymi danymi ich analizę, którymi są \textbf{Pandas}, \textbf{NumPy} oraz \textbf{Matplotlib}.\\
+
+\noindent
+W~poniższej tabeli zestawiono wybrane biblioteki wraz z ich wersjami oraz określono licencje, na~których zostały udostępnione.
+\begin{table}[H]
+    \begin{tabularx}{\textwidth}{|c|l|X|l|c|}
+        \hline
+        \textbf{Nr} & \textbf{Komponent, wersja} & \textbf{Opis} & \textbf{Licencja} & \\
+        \hline
+        \hline
+        1 & 
+        Matplotlib, 2.1.0 & 
+        Biblioteka wspomagająca rysowanie wykresów &
+        Matplotlib License &
+        \cite{matplotlib} \\
+        \hline
+        2 & 
+        NumPy, 1.13.3 &
+        Biblioteka obliczeniowa &
+        BSD License &
+        \cite{numpy} \\
+        \hline
+        3 &
+        Pandas, 0.21.0 &
+        Biblioteka zawierająca zaawansowane struktury danych &
+        BSD License &
+        \cite{pandas} \\
+        \hline
+    \end{tabularx}
+    \caption{Wykorzystane biblioteki wraz z~określeniem licencji}
+\end{table}
 
 \begin{thebibliography}{9}
+
+    \bibitem{matplotlib}
+        Matplotlib Development Team:
+        Matplotlib.
+        Oficjalna strona: \url{https://matplotlib.org}.
+        [Dostęp 26~lutego 2018]
+
+    \bibitem{pandas}
+        McKinney W.:
+        pandas -- Python Data Analysis Library.
+        Oficjalna strona: \url{https://pandas.pydata.org}.
+        [Dostęp 26~lutego 2018]
+
+    \bibitem{numpy}
+        Oliphant T.:
+        NumPy.
+        Oficjalna strona: \url{http://www.numpy.org}.
+        [Dostęp 26~lutego 2018]
 
     \bibitem{hastie2009}
         T. Hastie,
