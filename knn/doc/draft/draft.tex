@@ -1,4 +1,4 @@
-\documentclass[12pt,a4paper]{article}
+\documentclass[11pt,a4paper]{article}
 \usepackage{fullpage}
 \usepackage[T1]{fontenc} 
 \usepackage[utf8]{inputenc}
@@ -11,6 +11,8 @@
 
 \def\arraystretch{1.5}
 \renewcommand{\thesection}{\arabic{section}.}
+\setlength{\parindent}{0cm}
+\setlength{\parskip}{2mm}
 
 \begin{document}
 
@@ -35,6 +37,24 @@ Projekt realizowany będzie w~dwuosobowej grupie, w~składzie:
 \end{enumerate}
 
 \section{Opis algorytmu}
+
+Algorytm $k$ najbliższych sąsiadów jest jedną z~wielu metod rozwiązywania \textbf{problemu klasyfikacji}, czyli predykcji wartości zmiennych jakościowych (zwanych również zmiennymi kategorycznymi lub~dyskretnymi) na~podstawie przykładowych \textbf{danych treningowych} \cite[s.~9--10]{hastie2009}.
+Klasycznym przykładem tego typu problemu jest klasyfikacja gatunków irysów z~użyciem pomiarów rozmiarów działek kielicha oraz płatków kwiatu.
+
+Klasyfikatory oparte na~metodzie $k$ najbliższych sąsiadów operują na~punktach w~przestrzeni $n$-wymiarowej.
+Proces klasyfikacji danego punktu $x_0 \in \mathbb{R}^n$ odbywa~się w~następujący sposób:
+
+\begin{enumerate}
+    \item Ze~zbioru treningowego wybierane jest $k$ punktów znajdujących~się najbliżej punktu $x_0$ \cite[s.~261]{vapnik1998}.
+    Odległość między punktami definiowana jest najczęściej jako odległość euklidesowa w~przestrzeni $\mathbb{R}^n$.
+    \item Jeżeli większość z~wybranych $k$ punktów należy do~jednej klasy, to~punkt wejściowy jest przypisywany do~tej samej klasy.
+    \item Potencjalne remisy w~punkcie (2) są~rozstrzygane losowo \cite[s.~463--464]{hastie2009}.
+\end{enumerate}
+
+Liczba punktów wybieranych ze~zbioru treningowego (wartość~$k$) stanowi parametr algorytmu.
+Jakość działania metody w~dużym stopniu zależy od~odpowiedniego doboru tego parametru dla~danego zadania klasyfikacji \cite[s.~468--470]{hastie2009}.
+
+Ponieważ algorytm $k$-NN wymaga zapamiętania całości danych treningowych do~swojego działania, zaliczany jest on do~klasy klasyfikatorów \textbf{opartych na~pamięci} (ang. \emph{memory-based}) \cite[s.~463]{hastie2009}.
 
 \section{Wybrane technologie}
 Językiem programowania, który zdecydowano się wykorzystać, jest język skryptowy \textbf{Python} w wersji 3.5.2. Jest to~uwarunkowane między innymi sporymi możliwościami tego języka w~zakresie przetwarzania i~analizy danych, wygodę programowania i~przenośność stworzonych rozwiązań. Wybrano także pythonowe moduły, mające wspomóc pracę z~dużymi danymi ich analizę, którymi są \textbf{Pandas}, \textbf{NumPy} oraz \textbf{Matplotlib}.\\
