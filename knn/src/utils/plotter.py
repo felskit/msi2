@@ -2,7 +2,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from src.algorithms.knn import KnnClassifier
-from src.classes.point import Point
 
 
 class KnnPlotter:
@@ -23,7 +22,8 @@ class KnnPlotter:
         nrow, ncol = self.X.shape
         for i in range(nrow):
             for j in range(ncol):
-                self.Z[i, j] = self.classifier.classify(Point(self.X[i, j] + self.offset, self.Y[i, j] + self.offset))
+                point = (self.X[i, j] + self.offset, self.Y[i, j] + self.offset)
+                self.Z[i, j] = self.classifier.classify(point)
 
     def plot(self):
         self._classify_mesh()
