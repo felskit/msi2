@@ -4,3 +4,7 @@
 *.out
 *.synctex.gz
 *.pdf
+
+**/__pycache__
+**/venv
+**/.idea
