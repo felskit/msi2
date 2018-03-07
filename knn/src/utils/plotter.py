@@ -28,6 +28,7 @@ class KnnPlotter:
     def plot(self):
         self._classify_mesh()
         fig, ax = plt.subplots()
+        plt.set_cmap('Set1')
         ax.pcolormesh(self.X, self.Y, self.Z, edgecolors='None', alpha=0.2)
         ax.scatter(self.data['x'], self.data['y'], c=self.data['cls'], zorder=1)
         ax.set_xlim([-1, 1])
