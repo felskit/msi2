@@ -5,11 +5,11 @@ from src.algorithms.knn import KnnClassifier
 
 
 class KnnPlotter:
-    def __init__(self, k, data, delta):
+    def __init__(self, k, data, metric, delta):
         self.k = k
         self.data = data
         self.offset = delta / 2
-        self.classifier = KnnClassifier(k, data)
+        self.classifier = KnnClassifier(k, data, metric)
 
         lower_lim = -1
         upper_lim = 1 + 1e-3

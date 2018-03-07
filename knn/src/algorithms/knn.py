@@ -5,10 +5,10 @@ from src.classes.point import Point
 
 
 class KnnClassifier:
-    def __init__(self, k, data):
+    def __init__(self, k, data, metric):
         self.k = k
         self.data = data
-        self.get_dist = KnnClassifier._get_euclidean_dist  # TODO: switch-based metrics (some string parameter?)
+        self.get_dist = metric
 
     def classify(self, point):
         q = self._queueify(self.data, point)
@@ -27,13 +27,3 @@ class KnnClassifier:
 
     def _get_nearest_neighbors_labels(self, q):
         return [x.cls for x in heapq.nsmallest(self.k, q)]
-
-    # TODO: maybe take these out to another class containing all metrics?
-
-    @staticmethod
-    def _get_euclidean_dist(p1, p2):
-        return ((p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2) ** 1 / 2
-
-    @staticmethod
-    def _get_taxi_dist(p1, p2):
-        return abs(p1[0] - p2[0]) + abs(p1[1] - p2[1])
