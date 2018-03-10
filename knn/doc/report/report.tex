@@ -1,0 +1,126 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage{fullpage}
+\usepackage[T1]{fontenc} 
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{float}
+\usepackage{tabularx}
+\usepackage[hidelinks]{hyperref}
+\usepackage[polish]{babel}
+
+\def\arraystretch{1.5}
+\setlength{\parindent}{0cm}
+\setlength{\parskip}{2mm}
+
+\begin{document}
+
+\title{Metody sztucznej inteligencji 2 \\
+\Large{
+    Projekt 1. --- Algorytm $k$ najbliższych sąsiadów \\
+    Raport
+}}
+\author{Bartłomiej Dach, Tymon Felski}
+\maketitle
+
+Niniejszy dokument zawiera raport z~implementacji algorytmu $k$ najbliższych sąsiadów ($k$-NN, ang. \emph{$k$ nearest neighbors}) oraz~analizę efektywności jego działania dla~dostarczonych danych treningowych.
+
+\section{Algorytm $k$ najbliższych sąsiadów}
+
+Algorytm $k$ najbliższych sąsiadów jest jedną z~wielu metod rozwiązywania \textbf{problemu klasyfikacji}, czyli predykcji wartości zmiennych jakościowych (zwanych również zmiennymi kategorycznymi lub~dyskretnymi) na~podstawie przykładowych \textbf{danych treningowych} \cite[s.~9--10]{hastie2009}.
+Klasycznym przykładem tego typu problemu jest klasyfikacja gatunków irysów z~użyciem pomiarów rozmiarów działek kielicha oraz płatków kwiatu.
+
+Klasyfikatory oparte na~metodzie $k$ najbliższych sąsiadów operują na~punktach w~przestrzeni $n$-wymiarowej.
+Proces klasyfikacji danego punktu $x_0 \in \mathbb{R}^n$ odbywa~się w~następujący sposób:
+
+\begin{enumerate}
+    \item Ze~zbioru treningowego wybierane jest $k$ punktów znajdujących~się najbliżej punktu $x_0$ \cite[s.~261]{vapnik1998}.
+    \item Jeżeli większość z~wybranych $k$ punktów należy do~jednej klasy, to~punkt wejściowy jest przypisywany do~tej samej klasy.
+    \item Potencjalne remisy w~punkcie (2) są~rozstrzygane losowo \cite[s.~463--464]{hastie2009}.
+\end{enumerate}
+
+Liczba punktów wybieranych ze~zbioru treningowego (wartość~$k$) stanowi parametr algorytmu.
+Jakość działania metody w~dużym stopniu zależy od~odpowiedniego doboru tego parametru dla~danego zadania klasyfikacji \cite[s.~468--470]{hastie2009}.
+
+Do~parametrów algorytmu można zaliczyć również metrykę używaną do~obliczania odległości między punktami.
+W~zaimplementowanym algorytmie uwzględnione zostały następujące metryki:
+
+\begin{enumerate}
+    \item \textbf{odległość euklidesowa}:
+    $$ d(x,y) = \sqrt{\sum_{i=1}^n (x_i - y_i)^2} $$
+    \item \textbf{odległość taksówkowa (miejska, Manhattan)}:
+    $$ d(x,y) = \sum_{i=1}^n |x_i - y_i| $$
+    \item \textbf{odległość Czebyszewa (maksimum)}:
+    $$ d(x,y) = \max_{i=1,\dots,n} |x_i - y_i| $$
+    \item \textbf{odległość Minkowskiego} z~parametrem~$p$, stanowiąca uogólnienie powyższych:
+    $$ d(x,y) = \left( \sum_{i=1}^n |x_i - y_i|^p \right)^{1/p} $$
+\end{enumerate}
+
+Ponieważ algorytm $k$-NN wymaga zapamiętania całości danych treningowych do~swojego działania, zaliczany jest on do~klasy klasyfikatorów \textbf{opartych na~pamięci} (ang. \emph{memory-based}) \cite[s.~463]{hastie2009}.
+
+\section{Sposób analizy efektywności algorytmu}
+
+Efektywność działania $k$-NN była mierzona z~użyciem dwóch dostarczonych dwuwymiarowych zbiorów danych oraz~zastosowaniem metody kroswalidacji, zalecanej do~doboru parametrów metody \cite[s.~470]{hastie2009}.
+
+\subsection{Kroswalidacja}
+
+\textbf{$k$-krotna kroswalidacja (walidacja krzyżowa, sprawdzian krzyżowy)} to~technika ewaluacji metod klasyfikacji z~użyciem zebranych danych.
+W~tej technice zbiór danych treningowych $X$ dzielony~jest losowo na~$k$ rozłącznych podzbiorów $X_1,\dots,X_k$ podobnej liczności.
+
+Po~podziale danych wykonywane jest $k$ serii testowych.
+W $i$-tej serii testowany klasyfikator jako~dane treningowe otrzymuje zbiór $X \setminus X_i$.
+Zadaniem klasyfikatora jest wyznaczenie klas dla~punktów ze~zbioru $X_i$.
+Następnie dla~każdego punktu $x_j \in X_i$ następuje porównanie etykiety $y'_j$ wyznaczonej przez testowaną metodę z~etykietą faktyczną $y_j$ \cite[s.~241--243]{hastie2009}.
+
+Główną metryką dokładności algorytmu przy~tym porównaniu jest \textbf{proporcja błędnej klasyfikacji}, obliczana wzorem
+$$ e_i = \frac{1}{|X_i|} \cdot | \{ y_j \neq y'_j : j = 1,2,\dots,|X_i| \} | $$
+Końcowa proporcja błędnej klasyfikacji dla~danej metody jest obliczane poprzez uśrednienie uzyskanych $k$ wyników.
+
+\subsection{Rozważane zbiory treningowe}
+
+Algorytm został przetestowany na~dwuwymiarowych zbiorach {\tt simple} i {\tt three\_gauss}, w~których większość punktów zawiera~się w~kwadracie $[-1,1] \times [-1,1]$.
+Oba zbiory mają dość regularną charakterystykę, dzięki czemu możliwe jest również zastosowanie metod statystycznych do~oceny efektywności klasyfikatora $k$-NN.
+
+\subsubsection{Zbiór {\tt simple}}
+
+Zbiór {\tt simple} składa~się z~punktów o~rozkładzie zbliżonym do~jednostajnego wzdłuż obu współrzędnych. % [CITATION NEEDED]
+Punkty w~tym zbiorze podzielone~są na~dwie klasy wzdłuż prostej o~równaniu $x=y$.
+Docelowo klasyfikator powinien więc jak najwierniej odwzorować podział punktów wzdłuż tej prostej.
+
+\subsubsection{Zbiór {\tt three\_gauss}}
+
+Zbiór {\tt simple} zawiera trzy klasy, częściowo nakładające~się na~siebie.
+Każda z~trzech klas charakteryzuje~się rozkładem podobnym do~dwuwymiarowego rozkładu normalnego.
+
+% TODO: policzyć wartość oczekiwaną, macierz kowariancji
+
+\section{Wyniki eksperymentów}
+
+\subsection{Zbiór {\tt simple}}
+
+\subsection{Zbiór {\tt three\_gauss}}
+
+\section{Wnioski}
+
+\begin{thebibliography}{9}
+
+    \bibitem{hastie2009}
+        T. Hastie,
+        R. Tibshirani,
+        J. Friedman,
+        \emph{The Elements of Statistical Learning: Data Mining, Inference, and Prediction}.
+        Nowy Jork: Springer-Verlag,
+        2009.
+        [Online] \\
+        Dostępne: \url{https://web.stanford.edu/~hastie/ElemStatLearn/}.
+        [Dostęp 26~lutego 2018]
+
+    \bibitem{vapnik1998}
+        V.N. Vapnik,
+        \emph{Statistical learning theory}.
+        Nowy Jork: John Wiley and Sons,
+        1998.
+
+\end{thebibliography}
+
+\end{document}
