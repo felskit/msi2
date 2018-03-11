@@ -6,12 +6,17 @@
 \usepackage{amssymb}
 \usepackage{float}
 \usepackage{tabularx}
+\usepackage{multirow}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage[table,dvipsnames]{xcolor}
 \usepackage[hidelinks]{hyperref}
 \usepackage[polish]{babel}
 
 \def\arraystretch{1.5}
 \setlength{\parindent}{0cm}
 \setlength{\parskip}{2mm}
+\newcolumntype{Y}{>{\centering\arraybackslash}X}
 
 \begin{document}
 
@@ -121,11 +126,119 @@ Na~podstawie zbioru zawierającego 30~000 punktów wyznaczone zostały przybliż
 
 \section{Wyniki eksperymentów}
 
+Zgodnie z opisem zawartym w poprzednim rozdziale, jakość klasyfikacji przy pomocy algorytmu $k$-NN została przetestowana metodą kroswalidacji przy użyciu dwóch zbiorów treningowych i~różnych wartości parametrów. Zbadano zbiory {\tt simple} oraz {\tt three\_gauss} zawierające odpowiednio $1000$ i $3000$ elementów. Pod uwagę wzięto wartości parametru $k$ ze zbioru $\{1, 3, 5, 7, 9, 11, 13\}$ oraz pięć metryk:
+\begin{itemize}
+    \setlength\itemsep{-.4em}
+    \item odległość taksówkową,
+    \item odległość euklidesową,
+    \item odległość Czebyszewa,
+    \item odległość Minkowskiego z parametrem $p$ wynoszącym $1.5$,
+    \item odległość Minkowskiego z parametrem $p$ wynoszącym $3$.
+\end{itemize}
+Zastosowano pięciokrotną kroswalidację, tzn. dane treningowe zostały losowo podzielone na~$5$~rozłącznych podzbiorów. % TODO: coś o seedzie?
+
 \subsection{Zbiór {\tt simple}}
+
+Wyniki testów jakości klasyfikacji przy pomocy pięciokrotnej kroswalidacji dla zbioru {\tt simple} znajdują się w tabeli poniżej. % TODO: opisać czym jest ten ułamek (czego stosunek)
+Kolorem zielonym zaznaczono wynik najlepszy, a kolorem czerwonym -- najgorszy. Poza najlepszym i najgorszym wynikiem, na pomarańczowo wyróżniono także dwa zestawy parametrów z wynikiem bardzo zbliżonym do najlepszego.
+
+\begin{table}[H]
+    \begin{tabularx}{\textwidth}{|c|c|Y|Y|Y|Y|Y|Y|Y|}
+        \cline{3-9}
+        \multicolumn{2}{c|}{} & \multicolumn{7}{c|}{\textbf{Wartość parametru $k$}} \\
+        \cline{3-9}
+        \multicolumn{2}{c|}{} & 1 & 3 & 5 & 7 & 9 & 11 & 13 \\
+        \hline
+        \multirow{5}{*}{\rotatebox[origin=c]{90}{\textbf{Użyta metryka}}}
+        & taksówkowa & 0.9850 & \cellcolor{SpringGreen!50}0.9880 &  \cellcolor{YellowOrange!30}0.9870 & 0.9800 & 0.9820 & 0.9800 & 0.9810 \\
+        \cline{2-9}
+        & euklidesowa & 0.9850 & 0.9860 & 0.9820 & 0.9820 & 0.9830 & 0.9830 & \cellcolor{BrickRed!30}0.9790 \\
+        \cline{2-9}
+        & Czebyszewa & 0.9830 & 0.9860 & 0.9820 & 0.9810 & 0.9800 & 0.9810 & 0.9820 \\
+        \cline{2-9}
+        & Minkowskiego ($1.5$) & 0.9850 &  \cellcolor{YellowOrange!30}0.9870 & 0.9840 & 0.9800 & 0.9830 & 0.9810 & 0.9800 \\
+        \cline{2-9}
+        & Minkowskiego ($3$) & 0.9840 & 0.9850 & 0.9840 & 0.9820 & 0.9800 & 0.9810 & 0.9800 \\
+        \hline
+    \end{tabularx}
+    \caption{Wyniki kroswalidacji algorytmu $k$-NN dla zbioru treningowego {\tt simple}}
+    \label{tab:simple-all}
+\end{table}
+
+% TODO: skomentować ogólną tendencję (małe k lepsze, duże k gorsze, które metryki dały podobne wyniki do najlepszej i wcale nie były aż tak bardzo gorsze)
+
+Po ustaleniu najkorzystniejszych wartości parametrów algorytmu $k$-NN dla powyższego zbioru, zdecydowano się zbadać cały obszar $[-1,1] \times [-1,1]$ z gęstością próbkowania $\delta = 0.05$ i ustalić przynależność środkowych punktów każdego z kwadratów o boku~$\delta$, zawartych w tym obszarze, do jednej z klas zbioru treningowego. Poniższy wykres jest graficzną reprezentacją otrzymanych wyników dla $k = 3$ oraz metryki będącej odłegłością taksówkową.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=.8\textwidth]{res/simple-manhattan-3.pdf}
+  \caption{Klasyfikacja punktów z obszaru $[-1,1] \times [-1,1]$ dla $k = 3$ i odległości taksówkowej}
+  \label{fig:simple-manhattan-3}
+\end{figure}
+
+Dla kontrastu, podobną analizę przeprowadzono dla parametrów, które zapewniły najgorszą klasyfikację, czyli dla $k=13$ i odległości euklidesowej.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=.8\textwidth]{res/simple-euclidean-13.pdf}
+  \caption{Klasyfikacja punktów z obszaru $[-1,1] \times [-1,1]$ dla $k = 13$ i odległości euklidesowej}
+  \label{fig:simple-euclidean-13}
+\end{figure}
+
+% TODO: skomentować drobne różnice w kolorowaniu
 
 \subsection{Zbiór {\tt three\_gauss}}
 
+Pięciokrotną kroswalidację badanego klasyfikatora przeprowadzono także dla zbioru {\tt three\_gauss}. Jej wyniki znajdują się w tabeli poniżej. Komórki tabeli wyróżnione kolorami: zielonym, czerwonym i pomarańczowym mają tutaj takie same znaczenia.
+
+\begin{table}[H]
+    \begin{tabularx}{\textwidth}{|c|c|Y|Y|Y|Y|Y|Y|Y|}
+        \cline{3-9}
+        \multicolumn{2}{c|}{} & \multicolumn{7}{c|}{\textbf{Wartość parametru $k$}} \\
+        \cline{3-9}
+        \multicolumn{2}{c|}{} & 1 & 3 & 5 & 7 & 9 & 11 & 13 \\
+        \hline
+        \multirow{5}{*}{\rotatebox[origin=c]{90}{\textbf{Użyta metryka}}}
+        & taksówkowa & \cellcolor{BrickRed!30}0.9053 & 0.9233 & 0.9257 & 0.9283 & \cellcolor{SpringGreen!50}0.9333 & 0.9280 & 0.9290 \\
+        \cline{2-9}
+        & euklidesowa & 0.9073 & 0.9220 & 0.9230 & 0.9303 & 0.9290 & 0.9290 & 0.9267 \\
+        \cline{2-9}
+        & Czebyszewa & 0.9113 & 0.9213 & 0.9217 & 0.9253 & 0.9277 & \cellcolor{YellowOrange!30}0.9307 & 0.9300 \\
+        \cline{2-9}
+        & Minkowskiego ($1.5$) & 0.9070 & 0.9237 & 0.9253 & 0.9290 & \cellcolor{YellowOrange!30}0.9307 & 0.9280 & 0.9263 \\
+        \cline{2-9}
+        & Minkowskiego ($3$) & 0.9090 & 0.9210 & 0.9230 & 0.9300 & 0.9297 & 0.9297 & 0.9297 \\
+        \hline
+    \end{tabularx}
+    \caption{Wyniki kroswalidacji algorytmu $k$-NN dla zbioru treningowego {\tt three\_gauss}}
+    \label{tab:simple-all}
+\end{table}
+
+% TODO: skomentować ogólną tendencję (duże k lepsze, małe k gorsze, które metryki dały podobne wyniki do najlepszej i wcale nie były aż tak bardzo gorsze)
+
+Dla wyróżnionych parametrów algorytmu $k$-NN podczas klasyfikacji zbioru {\tt three\_gauss} przeprowadzono analogiczną analizę, jak w przypadku zbioru {\tt simple}. Punkty z obszaru $[-1,1] \times [-1,1]$ z gęstością próbkowania $\delta = 0.05$ zostały sklasyfikowane, w celu wizualizacji przyporządkowania. Poniższy wykres zawiera wyniki uzyskane dla wywołania algorytmu $k$-NN dla $k=9$ i odległości taksówkowej.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=.8\textwidth]{res/gauss-manhattan-9.pdf}
+  \caption{Klasyfikacja punktów z obszaru $[-1,1] \times [-1,1]$ dla $k = 9$ i odległości taksówkowej}
+  \label{fig:gauss-manhattan-9}
+\end{figure}
+
+Podobnie jak w poprzednim podrozdziale, dla zbioru {\tt three\_gauss} również zwizualizowano wynik działania algorytmu $k$-NN dla najgorszego zestawu parametrów, czyli $k=1$ i odległości taksówkowej. Przedstawia to poniższy wykres.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=.8\textwidth]{res/gauss-manhattan-1.pdf}
+  \caption{Klasyfikacja punktów z obszaru $[-1,1] \times [-1,1]$ dla $k = 1$ i odległości taksówkowej}
+  \label{fig:gauss-manhattan-1}
+\end{figure}
+
+% TODO: skomentować ogromne różnice w kolorowaniu
+
 \section{Wnioski}
+
+% TODO: zestawić najlepsze/najgorsze w każdym i przedstawić jakąś propozycję (wysnuć wniosek jakie parametry lepsze w jakim przypadku i dlaczego), napisać że to było przewidywalne, wymyślić jeszcze jakieś kryterium?
 
 \begin{thebibliography}{9}
 
