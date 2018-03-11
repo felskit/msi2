@@ -33,4 +33,5 @@ class KnnPlotter:
         ax.scatter(self.data['x'], self.data['y'], c=self.data['cls'], zorder=1)
         ax.set_xlim([-1, 1])
         ax.set_ylim([-1, 1])
-        plt.show()
+        plt.savefig('plot.pdf')
+        # plt.show()
