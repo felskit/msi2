@@ -165,7 +165,7 @@ Kolorem zielonym zaznaczono wynik najlepszy, a kolorem czerwonym -- najgorszy. P
     \label{tab:simple-all}
 \end{table}
 
-% TODO: skomentować ogólną tendencję (małe k lepsze, duże k gorsze, które metryki dały podobne wyniki do najlepszej i wcale nie były aż tak bardzo gorsze)
+W przypadku powyższych wyników dla zbioru {\tt simple} można zauważyć tendencję osiągania lepszej klasyfikacji dla mniejszych wartości parametrów $k$. Co prawda jest to bardzo mała różnica, ponieważ różnica pomiędzy najlepszym a najgorszym wynikiem nie wynosi nawet $1$ punktu procentowego, jednak jest ona widoczna. Jest to zgodne z przewidywaniami -- dla zbioru, w którym dane są liniowo separowalne, co skutkuje ostrym brzegiem pomiędzy klasami, rozważanie mniejszej liczby sąsiadów pozytywnie wpływa na ostateczny wynik, ponieważ nie rozmywa brzegu. Najlepiej wypadła tutaj klasyfikacja algorytmem $k$-NN dla $k=3$ i z metryką taksówkową, jednak takie samo wywołanie dla $k=5$ oraz wywołanie z $k=3$ i metryką Minkowskiego przy $p=1.5$ dały bardzo zbliżone do najlepszego wyniki. Można powiedzieć, że przy tak dużej spójności punktów, metryka nie ma aż tak dużego znaczenia.\\ % TODO: bardziej skomentować metryki i czy to ostatnie zdanie jest legalne?
 
 Po ustaleniu najkorzystniejszych wartości parametrów algorytmu $k$-NN dla powyższego zbioru, zdecydowano się zbadać cały obszar $[-1,1] \times [-1,1]$ z gęstością próbkowania $\delta = 0.05$ i ustalić przynależność środkowych punktów każdego z kwadratów o boku~$\delta$, zawartych w tym obszarze, do jednej z klas zbioru treningowego. Poniższy wykres jest graficzną reprezentacją otrzymanych wyników dla $k = 3$ oraz metryki będącej odłegłością taksówkową.
 
@@ -185,7 +185,7 @@ Dla kontrastu, podobną analizę przeprowadzono dla parametrów, które zapewni�
   \label{fig:simple-euclidean-13}
 \end{figure}
 
-% TODO: skomentować drobne różnice w kolorowaniu
+Zamieszczone powyżej wykresy \ref{fig:simple-manhattan-3} oraz \ref{fig:simple-euclidean-13} potwierdzają opisane wcześniej przypuszczenia. Rozważanie aż $13$ sąsiadów powoduje, że brzeg punktów ze zbioru nie jest poprawnie wyznaczony. Zjawisko rozmycia jest szczególnie widoczne w okolicy punktu $(-0.6, 0.7)$, w drugiej ćwiartce wykresu. Wokół punktów z klasy czerwonej, które znajdują się na brzegu, znajduje się więcej punktów z klasy szarej, co skutkuje zaklasyfikowaniem obszaru jako szary.
 
 \subsection{Zbiór {\tt three\_gauss}}
 
@@ -214,7 +214,8 @@ Pięciokrotną kroswalidację badanego klasyfikatora przeprowadzono także dla z
     \label{tab:simple-all}
 \end{table}
 
-% TODO: skomentować ogólną tendencję (duże k lepsze, małe k gorsze, które metryki dały podobne wyniki do najlepszej i wcale nie były aż tak bardzo gorsze)
+Jak już zostało to wcześniej opisane, klasy punktów w zbiorze {\tt three\_gauss} częściowo na siebie nachodzą i mamy tutaj do czynienia z tzw. outlierami. % TODO: wyjaśnić co to?
+Pozwala to na przypuszczenie, że rozważanie większej liczby sąsiadów powinno sobie poradzić z tym faktem. Patrząc na powyższe wyniki można stwierdzić, że takie przypuszczenie jest prawdziwe. Lepsze wyniki klasyfikacji można dostrzec w prawej części tabeli. Najlepiej wypadło tutaj wywołanie dla $k=9$ z metryką taksówkową, jednak niewiele gorszy wynik można osiągnąć dla takiej samej wartości $k$ z metryką Minkowskiego dla $p=9$ lub dla $k=11$ i odległości Czebyszewa. Różnica pomiędzy najgorszym a najlepszym wynikiem wynosi w przypadku zbioru {\tt three\_gauss} już aż prawie 3 punkty procentowe.\\ % TODO: bardziej skomentować metryki
 
 Dla wyróżnionych parametrów algorytmu $k$-NN podczas klasyfikacji zbioru {\tt three\_gauss} przeprowadzono analogiczną analizę, jak w przypadku zbioru {\tt simple}. Punkty z obszaru $[-1,1] \times [-1,1]$ z gęstością próbkowania $\delta = 0.05$ zostały sklasyfikowane, w celu wizualizacji przyporządkowania. Poniższy wykres zawiera wyniki uzyskane dla wywołania algorytmu $k$-NN dla $k=9$ i odległości taksówkowej.
 
@@ -234,9 +235,11 @@ Podobnie jak w poprzednim podrozdziale, dla zbioru {\tt three\_gauss} również 
   \label{fig:gauss-manhattan-1}
 \end{figure}
 
-% TODO: skomentować ogromne różnice w kolorowaniu
+Zamieszczone powyżej wykresy \ref{fig:gauss-manhattan-9} oraz \ref{fig:gauss-manhattan-1} pokazują jak ważne jest poprawne dobranie wartości parametru $k$ dla zbioru o takiej charakterstyce. Rozważanie większej liczby sąsiadów (w tym przypadku dziewięciu) powoduje, że punkty z danej klasy znajdujące się daleko od pozostałych nie powinny wpłynąć na niepoprawną klasyfikację w swojej okolicy, jeżeli zdecydowana większość sąsiadów należy do innej klasy. Dobrym przykładem tego zjawiska jest punkt z klasy czerwonej znajdujący się w okolicy punktu $(-0.3, -0.45)$. Dla~$k=9$ został on niemalże pominięty i znajduje się w obszarze należącym do klasy szarej. W przypadku klasyfikacji z $k=1$ punkt ten znacznie wpłynął na ostateczny wynik i~przyporządkował sobie spory obszar trzeciej ćwiartki wykresu.
 
 \section{Wnioski}
+
+Jedną z pierwszych rzeczy, jaką powinniśmy wziąć pod uwagę podczas doboru parametrów algorytmu $k$-NN jest charakterystyka zbioru treningowego. Jeżeli jest to zbiór z wyraźnie wyróżnionymi klasami zbiorów, lepsze wyniki pozwolą osiągnąć małe wartości parametru $k$. W przypadku zbiorów, w których klasy na siebie częściowo nachodzą i/lub zawierają tzw. outliery, korzystniejszym jest wybranie większej liczby sąsiadów.
 
 % TODO: zestawić najlepsze/najgorsze w każdym i przedstawić jakąś propozycję (wysnuć wniosek jakie parametry lepsze w jakim przypadku i dlaczego), napisać że to było przewidywalne, wymyślić jeszcze jakieś kryterium?
 
@@ -261,4 +264,4 @@ Podobnie jak w poprzednim podrozdziale, dla zbioru {\tt three\_gauss} również 
 
 \end{thebibliography}
 
-\end{document}
+\end{document} % TODO: sformatować całość, żeby nie było jakichś pustych stron (resize obrazków?)
