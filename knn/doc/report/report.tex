@@ -89,8 +89,33 @@ Docelowo klasyfikator powinien więc jak najwierniej odwzorować podział punkt�
 
 \subsubsection{Zbiór {\tt three\_gauss}}
 
-Zbiór {\tt simple} zawiera trzy klasy, częściowo nakładające~się na~siebie.
-Każda z~trzech klas charakteryzuje~się rozkładem podobnym do~dwuwymiarowego rozkładu normalnego.
+Zbiór {\tt three\_gauss} zawiera trzy klasy, częściowo nakładające~się na~siebie.
+Każda z~trzech klas charakteryzuje~się rozkładem podobnym do~dwuwymiarowego rozkładu normalnego:
+
+$$ f(\mathbf{x}) = \frac{\exp \left( -\frac{1}{2} (\mathbf{x} - \boldsymbol\mu)^\mathsf{T} \boldsymbol\Sigma^{-1} (\mathbf{x} - \boldsymbol\mu) \right)}{2\pi \sqrt{|\boldsymbol\Sigma|}} $$
+
+Na~podstawie zbioru zawierającego 30~000 punktów wyznaczone zostały przybliżone parametry rozkładów:
+
+\begin{enumerate}
+    \item Dla~klasy~1. mamy
+    $$
+        \boldsymbol\mu_1 \approx \begin{bmatrix} 0.1 \\ 0.5 \end{bmatrix},
+        \qquad
+        \boldsymbol\Sigma_1 \approx \begin{bmatrix} 0.04 & 0 \\ 0 & 0.04 \end{bmatrix},
+    $$
+    \item Dla~klasy~2. mamy
+    $$
+        \boldsymbol\mu_2 \approx \begin{bmatrix} -0.6 \\ 0.2 \end{bmatrix},
+        \qquad
+        \boldsymbol\Sigma_2 \approx \begin{bmatrix} 0.04 & 0 \\ 0 & 0.0025 \end{bmatrix},
+    $$
+    \item Dla~klasy~3. mamy
+    $$
+        \boldsymbol\mu_3 \approx \begin{bmatrix} 0 \\ -0.3 \end{bmatrix},
+        \qquad
+        \boldsymbol\Sigma_3 \approx \begin{bmatrix} 0.03 & -0.045 \\ -0.045 & 0.16 \end{bmatrix}.
+    $$
+\end{enumerate}
 
 % TODO: policzyć wartość oczekiwaną, macierz kowariancji
 
