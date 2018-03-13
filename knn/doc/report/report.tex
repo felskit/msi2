@@ -89,7 +89,7 @@ Oba zbiory mają dość regularną charakterystykę, dzięki czemu możliwe jest
 \subsubsection{Zbiór {\tt simple}}
 
 Zbiór {\tt simple} składa~się z~punktów o~rozkładzie zbliżonym do~jednostajnego wzdłuż obu współrzędnych
-Punkty w~tym zbiorze podzielone~są na~dwie klasy wzdłuż prostej o~równaniu $x=y$.
+Punkty w~tym zbiorze podzielone~są na~dwie klasy wzdłuż prostej o~równaniu $x + y = 0$.
 Docelowo klasyfikator powinien więc jak najwierniej odwzorować podział punktów wzdłuż tej prostej.
 
 \subsubsection{Zbiór {\tt three\_gauss}}
@@ -155,7 +155,7 @@ We~wszystkich próbach ziarno generatora liczb losowych zostało ustalone, aby~p
 \subsubsection{Kroswalidacja}
 
 Wyniki testów jakości klasyfikacji przy pomocy pięciokrotnej kroswalidacji dla zbioru {\tt simple} znajdują się w tabeli poniżej.
-Liczby w~tabeli oznaczają proporcję poprawnej klasyfikacji ($1 - e_i$).
+Liczby w~tabeli oznaczają średnią proporcję poprawnej klasyfikacji ($1 - \overline{e_i}$).
 Kolorem zielonym zaznaczono wynik najlepszy, a kolorem czerwonym~--- najgorszy. Poza najlepszym i najgorszym wynikiem, na pomarańczowo wyróżniono także dwa zestawy parametrów z wynikiem bardzo zbliżonym do najlepszego.
 
 \begin{table}[H]
@@ -181,7 +181,7 @@ Kolorem zielonym zaznaczono wynik najlepszy, a kolorem czerwonym~--- najgorszy. 
     \label{tab:simple-all}
 \end{table}
 
-W przypadku powyższych wyników dla zbioru {\tt simple} można zauważyć tendencję osiągania lepszej klasyfikacji dla mniejszych wartości parametrów $k$. Co prawda jest to bardzo mała różnica, ponieważ różnica pomiędzy najlepszym a najgorszym wynikiem nie wynosi nawet $1$ punktu procentowego, jednak jest ona widoczna. Jest to zgodne z przewidywaniami -- dla zbioru, w którym dane są liniowo separowalne, co skutkuje ostrym brzegiem pomiędzy klasami, rozważanie mniejszej liczby sąsiadów pozytywnie wpływa na ostateczny wynik, ponieważ nie rozmywa brzegu. Najlepiej wypadła tutaj klasyfikacja algorytmem $k$-NN dla $k=3$ i z metryką taksówkową, jednak takie samo wywołanie dla $k=5$ oraz wywołanie z $k=3$ i metryką Minkowskiego przy $p=1.5$ dały bardzo zbliżone do najlepszego wyniki. Równomierny rozkład punktów w~obszarze niweluje różnice w~wynikach spowodowane wyborem metryki.
+W przypadku powyższych wyników dla zbioru {\tt simple} można zauważyć tendencję osiągania lepszej klasyfikacji dla mniejszych wartości parametrów $k$. Co prawda jest to bardzo mała różnica, ponieważ różnica pomiędzy najlepszym a najgorszym wynikiem nie wynosi nawet $1$ punktu procentowego, jednak jest ona widoczna. Jest to zgodne z przewidywaniami -- dla zbioru, w którym dane są liniowo separowalne, co skutkuje ostrym brzegiem pomiędzy klasami, rozważanie mniejszej liczby sąsiadów pozytywnie wpływa na ostateczny wynik, ponieważ nie rozmywa brzegu. Najlepiej wypadła tutaj klasyfikacja algorytmem $k$-NN dla $k=3$ i z metryką taksówkową, jednak takie samo wywołanie dla $k=5$ oraz wywołanie z $k=3$ i metryką Minkowskiego przy $p=1.5$ dały bardzo zbliżone wyniki. Równomierny rozkład punktów w~obszarze niweluje różnice w~wynikach spowodowane wyborem metryki.
 
 Po ustaleniu najkorzystniejszych wartości parametrów algorytmu $k$-NN dla powyższego zbioru, zdecydowano się zbadać cały obszar $[-1,1] \times [-1,1]$ z gęstością próbkowania $\delta = 0.05$ i ustalić przynależność środkowych punktów każdego z kwadratów o boku~$\delta$, zawartych w tym obszarze, do jednej z klas zbioru treningowego. Poniższy wykres jest graficzną reprezentacją otrzymanych wyników dla $k = 3$ oraz metryki będącej odłegłością taksówkową.
 
@@ -191,6 +191,8 @@ Po ustaleniu najkorzystniejszych wartości parametrów algorytmu $k$-NN dla powy
   \caption{Klasyfikacja punktów z obszaru $[-1,1] \times [-1,1]$ dla $k = 3$ i odległości taksówkowej}
   \label{fig:simple-manhattan-3}
 \end{figure}
+
+\newpage
 
 Dla kontrastu, podobną analizę przeprowadzono dla parametrów, które zapewniły najgorszą klasyfikację, czyli dla $k=13$ i odległości euklidesowej.
 
@@ -234,6 +236,8 @@ Różnice między poszczególnymi metrykami nie~są znaczne (rozstęp $0.5$ punk
 
 \subsection{Zbiór {\tt three\_gauss}}
 
+\subsubsection{Kroswalidacja}
+
 Pięciokrotną kroswalidację badanego klasyfikatora przeprowadzono także dla zbioru {\tt three\_gauss}. Jej wyniki znajdują się w tabeli poniżej. Komórki tabeli wyróżnione kolorami: zielonym, czerwonym i pomarańczowym mają tutaj takie same znaczenia.
 
 \begin{table}[H]
@@ -259,8 +263,9 @@ Pięciokrotną kroswalidację badanego klasyfikatora przeprowadzono także dla z
     \label{tab:simple-all}
 \end{table}
 
-Jak już zostało to wcześniej opisane, klasy punktów w zbiorze {\tt three\_gauss} częściowo na siebie nachodzą; ponadto mamy tutaj do czynienia z tzw. obserwacjami odstającymi, czyli punktami z~klasy, które znajdują~się daleko od~pozostałych.
-Pozwala to na przypuszczenie, że rozważanie większej liczby sąsiadów powinno sobie poradzić z tym faktem. Patrząc na powyższe wyniki można stwierdzić, że takie przypuszczenie jest prawdziwe. Lepsze wyniki klasyfikacji można dostrzec w prawej części tabeli. Najlepiej wypadło tutaj wywołanie dla $k=9$ z metryką taksówkową, jednak niewiele gorszy wynik można osiągnąć dla takiej samej wartości $k$ z metryką Minkowskiego dla $p=9$ lub dla $k=11$ i odległości Czebyszewa. Różnica pomiędzy najgorszym a najlepszym wynikiem wynosi w przypadku zbioru {\tt three\_gauss} już aż prawie 3 punkty procentowe.\\ % TODO: bardziej skomentować metryki
+Jak już zostało to wcześniej opisane, klasy punktów w zbiorze {\tt three\_gauss} częściowo na siebie nachodzą; ponadto mamy w~nim do~czynienia z~tzw. obserwacjami odstającymi, czyli punktami z~klasy, które znajdują~się daleko od~pozostałych.
+Wybór większego parametru $k$ pozwala na~zniwelowanie wpływu obserwacji odstających na~działanie algorytmu, co~demonstrują dane doświadczalne.
+Lepsze wyniki klasyfikacji można dostrzec w prawej części tabeli. Najlepiej wypadło tutaj wywołanie dla $k=9$ z metryką taksówkową, jednak niewiele gorszy wynik można osiągnąć dla takiej samej wartości $k$ z metryką Minkowskiego dla $p=9$ lub dla $k=11$ i odległości Czebyszewa. Różnica pomiędzy najgorszym a najlepszym wynikiem wynosi w przypadku zbioru {\tt three\_gauss} już aż prawie 3 punkty procentowe.\\ % TODO: bardziej skomentować metryki
 
 Dla wyróżnionych parametrów algorytmu $k$-NN podczas klasyfikacji zbioru {\tt three\_gauss} przeprowadzono analogiczną analizę, jak w przypadku zbioru {\tt simple}. Punkty z obszaru $[-1,1] \times [-1,1]$ z gęstością próbkowania $\delta = 0.05$ zostały sklasyfikowane, w celu wizualizacji przyporządkowania. Poniższy wykres zawiera wyniki uzyskane dla wywołania algorytmu $k$-NN dla $k=9$ i odległości taksówkowej.
 
@@ -271,6 +276,8 @@ Dla wyróżnionych parametrów algorytmu $k$-NN podczas klasyfikacji zbioru {\tt
   \label{fig:gauss-manhattan-9}
 \end{figure}
 
+\newpage
+
 Podobnie jak w poprzednim podrozdziale, dla zbioru {\tt three\_gauss} również zwizualizowano wynik działania algorytmu $k$-NN dla najgorszego zestawu parametrów, czyli $k=1$ i odległości taksówkowej. Przedstawia to poniższy wykres.
 
 \begin{figure}[H]
@@ -280,7 +287,7 @@ Podobnie jak w poprzednim podrozdziale, dla zbioru {\tt three\_gauss} również 
   \label{fig:gauss-manhattan-1}
 \end{figure}
 
-Zamieszczone powyżej wykresy \ref{fig:gauss-manhattan-9} oraz \ref{fig:gauss-manhattan-1} pokazują jak ważne jest poprawne dobranie wartości parametru $k$ dla zbioru o takiej charakterstyce. Rozważanie większej liczby sąsiadów (w tym przypadku dziewięciu) powoduje, że punkty z danej klasy znajdujące się daleko od pozostałych nie powinny wpłynąć na niepoprawną klasyfikację w swojej okolicy, jeżeli zdecydowana większość sąsiadów należy do innej klasy. Dobrym przykładem tego zjawiska jest punkt z klasy czerwonej znajdujący się w okolicy punktu $(-0.3, -0.45)$. Dla~$k=9$ został on niemalże pominięty i znajduje się w obszarze należącym do klasy szarej. W przypadku klasyfikacji z $k=1$ punkt ten znacznie wpłynął na ostateczny wynik i~przyporządkował sobie spory obszar trzeciej ćwiartki wykresu.
+Zamieszczone powyżej wykresy \ref{fig:gauss-manhattan-9} oraz \ref{fig:gauss-manhattan-1} pokazują znaczenie poprawnego dobrania wartości parametru $k$ dla zbioru o takiej charakterystyce. Rozważanie większej liczby sąsiadów (w tym przypadku dziewięciu) powoduje, że punkty z danej klasy znajdujące się daleko od pozostałych nie~wpływają na~klasyfikację w swojej okolicy, jeżeli zdecydowana większość sąsiadów należy do innej klasy. Dobrym przykładem tego zjawiska jest punkt z klasy czerwonej znajdujący się w okolicy punktu $(-0.3, -0.45)$. Dla~$k=9$ został on pominięty i znajduje się w obszarze należącym do klasy szarej. W przypadku klasyfikacji z $k=1$ punkt ten znacznie wpłynął na ostateczny wynik i~spowodował przyporządkowanie sporego obszaru trzeciej ćwiartki wykresu do~swojej klasy.
 
 \subsubsection{Analiza powstałych obszarów}
 
@@ -309,14 +316,17 @@ Wyniki tego eksperymentu znajdują~się w~tabeli \ref{tbl:shape-gauss}.
 \end{table}
 
 Jakość odwzorowania w~tym przypadku znacząco spada, ponieważ podział przedstawiony na~wykresie \ref{fig:gauss-ideal} nie~jest intuicyjny z~geometrycznego punktu widzenia.
-Algorytm $k$-NN w~dużej mierze opiera~się na~miarach w~celu wyznaczenia sąsiedztwa, więc szczególnie w~drugiej ćwiartce układu współrzędnych rozbieżności są duże.
+Algorytm $k$-NN w~dużej mierze opiera~się na~miarach w~celu wyznaczenia sąsiedztwa, więc szczególnie w~drugiej ćwiartce układu współrzędnych (blisko klasy 2, oznaczonej na~rysunkach kolorem pomarańczowym) rozbieżności są duże.
 Natomiast i~w~tym przypadku zauważalny jest~wzrost jakości odwzorowania wraz~z~wzrostem parametru~$p$ w~normie Minkowskiego.
 
 \section{Wnioski}
 
-Jedną z pierwszych rzeczy, jaką powinniśmy wziąć pod uwagę podczas doboru parametrów algorytmu $k$-NN jest charakterystyka zbioru treningowego. Jeżeli jest to zbiór z wyraźnie wyróżnionymi klasami zbiorów, lepsze wyniki pozwolą osiągnąć małe wartości parametru $k$. W przypadku zbiorów, w których klasy na siebie częściowo nachodzą i/lub zawierają tzw. obserwacje odstające lub~zaszumione, korzystniejszym jest wybranie większej liczby sąsiadów.
+Algorytm $k$ najbliższych sąsiadów jest jednym z~najprostszych klasyfikatorów pod~względem zasady działania.
+Testy z~dostarczonymi zbiorami pokazały jednak, że~jest on~w~stanie osiągać bardzo dobre wyniki dla~danych o~odpowiedniej regularności.
+Dużym minusem algorytmu jest jednak konieczność zapamiętania całego zbioru treningowego, co~jest w~przypadku dużych ilości danych źródłem problemów zarówno pamięciowych, jak i~wydajnościowych.
 
-% TODO: zestawić najlepsze/najgorsze w każdym i przedstawić jakąś propozycję (wysnuć wniosek jakie parametry lepsze w jakim przypadku i dlaczego), napisać że to było przewidywalne, wymyślić jeszcze jakieś kryterium?
+Z~przeprowadzonych eksperymentów wynika, że~odpowiedni dobór parametrów klasyfikatora stanowi kluczową rolę w~jego dokładnym działaniu.
+Przy~doborze parametru $k$ należy brać pod~uwagę czynniki takie, jak separowalność klas, zaszumienie danych oraz~występowanie obserwacji odstających, zaś wybór metryki ma~znaczący wpływ na~kształty obszarów, na~które klasyfikator dzieli przestrzeń $\mathbb{R}^n$.
 
 \begin{thebibliography}{9}
 
