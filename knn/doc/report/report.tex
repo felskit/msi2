@@ -33,7 +33,7 @@ Niniejszy dokument zawiera raport z~implementacji algorytmu $k$ najbliższych s�
 \section{Algorytm $k$ najbliższych sąsiadów}
 
 Algorytm $k$ najbliższych sąsiadów jest jedną z~wielu metod rozwiązywania \textbf{problemu klasyfikacji}, czyli predykcji wartości zmiennych jakościowych (zwanych również zmiennymi kategorycznymi lub~dyskretnymi) na~podstawie przykładowych \textbf{danych treningowych} \cite[s.~9--10]{hastie2009}.
-Klasycznym przykładem tego typu problemu jest klasyfikacja gatunków irysów z~użyciem pomiarów rozmiarów działek kielicha oraz płatków kwiatu.
+Klasycznym przykładem tego typu problemu jest klasyfikacja gatunków irysów z~użyciem pomiarów rozmiarów działek kielicha oraz płatków kwiatu. \\
 
 Klasyfikatory oparte na~metodzie $k$ najbliższych sąsiadów operują na~punktach w~przestrzeni $n$-wymiarowej.
 Proces klasyfikacji danego punktu $x_0 \in \mathbb{R}^n$ odbywa~się w~następujący sposób:
@@ -45,7 +45,7 @@ Proces klasyfikacji danego punktu $x_0 \in \mathbb{R}^n$ odbywa~się w~następuj
 \end{enumerate}
 
 Liczba punktów wybieranych ze~zbioru treningowego (wartość~$k$) stanowi parametr algorytmu.
-Jakość działania metody w~dużym stopniu zależy od~odpowiedniego doboru tego parametru dla~danego zadania klasyfikacji \cite[s.~468--470]{hastie2009}.
+Jakość działania metody w~dużym stopniu zależy od~odpowiedniego doboru tego parametru dla~danego zadania klasyfikacji \cite[s.~468--470]{hastie2009}. \\
 
 Do~parametrów algorytmu można zaliczyć również metrykę używaną do~obliczania odległości między punktami.
 W~zaimplementowanym algorytmie uwzględnione zostały następujące metryki:
@@ -70,12 +70,12 @@ Efektywność działania $k$-NN była mierzona z~użyciem dwóch dostarczonych d
 \subsection{Kroswalidacja}
 
 \textbf{$k$-krotna kroswalidacja (walidacja krzyżowa, sprawdzian krzyżowy)} to~technika ewaluacji metod klasyfikacji z~użyciem zebranych danych.
-W~tej technice zbiór danych treningowych $X$ dzielony~jest losowo na~$k$ rozłącznych podzbiorów $X_1,\dots,X_k$ podobnej liczności.
+W~tej technice zbiór danych treningowych $X$ dzielony~jest losowo na~$k$ rozłącznych podzbiorów $X_1,\dots,X_k$ podobnej liczności. \\
 
 Po~podziale danych wykonywane jest $k$ serii testowych.
 W $i$-tej serii testowany klasyfikator jako~dane treningowe otrzymuje zbiór $X \setminus X_i$.
 Zadaniem klasyfikatora jest wyznaczenie klas dla~punktów ze~zbioru $X_i$.
-Następnie dla~każdego punktu $x_j \in X_i$ następuje porównanie etykiety $y'_j$ wyznaczonej przez testowaną metodę z~etykietą faktyczną $y_j$ \cite[s.~241--243]{hastie2009}.
+Następnie dla~każdego punktu $x_j \in X_i$ następuje porównanie etykiety $y'_j$ wyznaczonej przez testowaną metodę z~etykietą faktyczną $y_j$ \cite[s.~241--243]{hastie2009}. \\
 
 Główną metryką dokładności algorytmu przy~tym porównaniu jest \textbf{proporcja błędnej klasyfikacji}, obliczana wzorem
 $$ e_i = \frac{1}{|X_i|} \cdot | \{ y_j \neq y'_j : j = 1,2,\dots,|X_i| \} | $$
@@ -131,7 +131,7 @@ Podział ten dla~zbioru {\tt three\_gauss} ukazuje rysunek \ref{fig:gauss-ideal}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=.8\textwidth]{res/gauss-ideal.pdf}
+    \includegraphics[width=.7\textwidth]{res/gauss-ideal.pdf}
     \caption{Podział obszaru $[-1,1] \times [-1,1]$ na~klasy z~użyciem odległości Mahalanobisa}
     \label{fig:gauss-ideal}
 \end{figure}
@@ -182,12 +182,13 @@ Kolorem zielonym zaznaczono wynik najlepszy, a kolorem czerwonym~--- najgorszy. 
 \end{table}
 
 W przypadku powyższych wyników dla zbioru {\tt simple} można zauważyć tendencję osiągania lepszej klasyfikacji dla mniejszych wartości parametrów $k$. Co prawda jest to bardzo mała różnica, ponieważ różnica pomiędzy najlepszym a najgorszym wynikiem nie wynosi nawet $1$ punktu procentowego, jednak jest ona widoczna. Jest to zgodne z przewidywaniami -- dla zbioru, w którym dane są liniowo separowalne, co skutkuje ostrym brzegiem pomiędzy klasami, rozważanie mniejszej liczby sąsiadów pozytywnie wpływa na ostateczny wynik, ponieważ nie rozmywa brzegu. Najlepiej wypadła tutaj klasyfikacja algorytmem $k$-NN dla $k=3$ i z metryką taksówkową, jednak takie samo wywołanie dla $k=5$ oraz wywołanie z $k=3$ i metryką Minkowskiego przy $p=1.5$ dały bardzo zbliżone wyniki. Równomierny rozkład punktów w~obszarze niweluje różnice w~wynikach spowodowane wyborem metryki.
+\\
 
-Po ustaleniu najkorzystniejszych wartości parametrów algorytmu $k$-NN dla powyższego zbioru, zdecydowano się zbadać cały obszar $[-1,1] \times [-1,1]$ z gęstością próbkowania $\delta = 0.05$ i ustalić przynależność środkowych punktów każdego z kwadratów o boku~$\delta$, zawartych w tym obszarze, do jednej z klas zbioru treningowego. Poniższy wykres jest graficzną reprezentacją otrzymanych wyników dla $k = 3$ oraz metryki będącej odłegłością taksówkową.
+Po ustaleniu najkorzystniejszych wartości parametrów algorytmu $k$-NN dla powyższego zbioru, zdecydowano się zbadać cały obszar $[-1,1] \times [-1,1]$ z gęstością próbkowania $\delta = 0.05$ i ustalić przynależność środkowych punktów każdego z kwadratów o boku~$\delta$, zawartych w tym obszarze, do jednej z klas zbioru treningowego. Poniższy wykres jest graficzną reprezentacją otrzymanych wyników dla $k = 3$ oraz metryki będącej odległością taksówkową.
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=.8\textwidth]{res/simple-manhattan-3.pdf}
+  \includegraphics[width=.7\textwidth]{res/simple-manhattan-3.pdf}
   \caption{Klasyfikacja punktów z obszaru $[-1,1] \times [-1,1]$ dla $k = 3$ i odległości taksówkowej}
   \label{fig:simple-manhattan-3}
 \end{figure}
@@ -198,7 +199,7 @@ Dla kontrastu, podobną analizę przeprowadzono dla parametrów, które zapewni�
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=.8\textwidth]{res/simple-euclidean-13.pdf}
+  \includegraphics[width=.7\textwidth]{res/simple-euclidean-13.pdf}
   \caption{Klasyfikacja punktów z obszaru $[-1,1] \times [-1,1]$ dla $k = 13$ i odległości euklidesowej}
   \label{fig:simple-euclidean-13}
 \end{figure}
@@ -271,7 +272,7 @@ Dla wyróżnionych parametrów algorytmu $k$-NN podczas klasyfikacji zbioru {\tt
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=.8\textwidth]{res/gauss-manhattan-9.pdf}
+  \includegraphics[width=.7\textwidth]{res/gauss-manhattan-9.pdf}
   \caption{Klasyfikacja punktów z obszaru $[-1,1] \times [-1,1]$ dla $k = 9$ i odległości taksówkowej}
   \label{fig:gauss-manhattan-9}
 \end{figure}
@@ -282,7 +283,7 @@ Podobnie jak w poprzednim podrozdziale, dla zbioru {\tt three\_gauss} również 
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=.8\textwidth]{res/gauss-manhattan-1.pdf}
+  \includegraphics[width=.7\textwidth]{res/gauss-manhattan-1.pdf}
   \caption{Klasyfikacja punktów z obszaru $[-1,1] \times [-1,1]$ dla $k = 1$ i odległości taksówkowej}
   \label{fig:gauss-manhattan-1}
 \end{figure}
@@ -291,7 +292,7 @@ Zamieszczone powyżej wykresy \ref{fig:gauss-manhattan-9} oraz \ref{fig:gauss-ma
 
 \subsubsection{Analiza powstałych obszarów}
 
-Analogiczie jak w~przypadku zbioru {\tt simple}, kształt obszarów wyznaczonych przez $k$-NN porównano z~wzorcowym (w~tym przypadku jest to~podział wyznaczony przez odległość Mahalanobisa, ukazany na~rys. \ref{fig:gauss-ideal}).
+Analogicznie jak w~przypadku zbioru {\tt simple}, kształt obszarów wyznaczonych przez $k$-NN porównano z~wzorcowym (w~tym przypadku jest to~podział wyznaczony przez odległość Mahalanobisa, ukazany na~rys. \ref{fig:gauss-ideal}).
 Wyniki tego eksperymentu znajdują~się w~tabeli \ref{tbl:shape-gauss}.
 
 \begin{table}[H]
@@ -323,7 +324,7 @@ Natomiast i~w~tym przypadku zauważalny jest~wzrost jakości odwzorowania wraz~z
 
 Algorytm $k$ najbliższych sąsiadów jest jednym z~najprostszych klasyfikatorów pod~względem zasady działania.
 Testy z~dostarczonymi zbiorami pokazały jednak, że~jest on~w~stanie osiągać bardzo dobre wyniki dla~danych o~odpowiedniej regularności.
-Dużym minusem algorytmu jest jednak konieczność zapamiętania całego zbioru treningowego, co~jest w~przypadku dużych ilości danych źródłem problemów zarówno pamięciowych, jak i~wydajnościowych.
+Dużym minusem algorytmu jest jednak konieczność zapamiętania całego zbioru treningowego, co~jest w~przypadku dużych ilości danych źródłem problemów zarówno pamięciowych, jak i~wydajnościowych. \\
 
 Z~przeprowadzonych eksperymentów wynika, że~odpowiedni dobór parametrów klasyfikatora stanowi kluczową rolę w~jego dokładnym działaniu.
 Przy~doborze parametru $k$ należy brać pod~uwagę czynniki takie, jak separowalność klas, zaszumienie danych oraz~występowanie obserwacji odstających, zaś wybór metryki ma~znaczący wpływ na~kształty obszarów, na~które klasyfikator dzieli przestrzeń $\mathbb{R}^n$.
