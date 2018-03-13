@@ -1,5 +1,5 @@
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 
 from src.algorithms.knn import KnnClassifier
 
@@ -22,7 +22,7 @@ class KnnPlotter:
         nrow, ncol = self.X.shape
         for i in range(nrow):
             for j in range(ncol):
-                point = (self.X[i, j] + self.offset, self.Y[i, j] + self.offset)
+                point = np.array((self.X[i, j] + self.offset, self.Y[i, j] + self.offset))
                 self.Z[i, j] = self.classifier.classify(point)
 
     def plot(self):

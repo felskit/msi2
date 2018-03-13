@@ -1,4 +1,6 @@
 import heapq
+
+import numpy as np
 import pandas as pd
 
 from src.classes.point import Point
@@ -20,8 +22,8 @@ class KnnClassifier:
     def _queueify(self, data, point):
         q = []
         for _, row in data.iterrows():
-            row_point = (row['x'], row['y'])
-            q.append(Point(row['cls'], self.get_dist(row_point, point)))
+            row_coords = np.array(row[:-1])
+            q.append(Point(row['cls'], self.get_dist(row_coords, point)))
         heapq.heapify(q)
         return q
 
