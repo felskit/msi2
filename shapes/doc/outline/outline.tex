@@ -1,0 +1,152 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage{fullpage}
+\usepackage[T1]{fontenc} 
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{float}
+\usepackage{tabularx}
+\usepackage[hidelinks]{hyperref}
+\usepackage[polish]{babel}
+
+\def\arraystretch{1.5}
+\renewcommand{\thesection}{\arabic{section}.}
+\setlength{\parindent}{0cm}
+\setlength{\parskip}{2mm}
+
+\begin{document}
+
+\title{Metody sztucznej inteligencji 2 \\
+\Large{
+    Projekt 2. --- Rozpoznawanie kształtów w czasie rzeczywistym \\
+    Konspekt
+}}
+\author{Bartłomiej Dach, Tymon Felski}
+\maketitle
+
+\noindent
+Niniejszy dokument zawiera informacje wstępne na temat drugiego projektu, którego celem jest zaimplementowanie dwóch podejść do~rozpoznawania prostych kształtów -- z~wykorzystaniem biblioteki \textbf{OpenCV} i~sieci neuronowej -- oraz ich~analiza i~porównanie na~podstawie dostarczonych danych treningowych.
+
+\section{Skład grupy}
+
+Projekt realizowany będzie w~dwuosobowej grupie, w~składzie:
+\begin{enumerate}
+    \setlength\itemsep{-.4em}
+    \item Bartłomiej Dach,
+    \item Tymon Felski.
+\end{enumerate}
+
+\section{Opis problemu badawczego}
+
+Uczenie maszynowe znajduje szerokie zastosowania w dziedzinie rozpoznawania obiektów. Istnieje niezliczona ilość podejść do tego problemu, nierzadko różniących się znacząco wykorzystywanymi technikami i technologiami. Wszystkie bazują jednak na znajdowaniu pewnego rodzaju podobieństwa na obrazach i stwierdzaniu czy mamy do czynienia z tą samą cechą.\\
+
+Niniejszy projekt będzie ograniczał się jedynie do prostych kształtów takich jak: trójkąt, kwadrat, koło, gwiazda. Kształty będą mogły znajdować się na obrazach w różnych miejscach, każdy w innej skali i orientacji oraz po kilka na jednym obrazie. Docelowo planowane jest umożliwienie nie tylko wczytania i przetworzenia pojedynczego obrazka, ale wykorzystanie strumienia z wbudowanej kamerki internetowej i przetwarzanie w czasie rzeczywistym. Będzie to także jedno z kryteriów oceny rozwiązania.
+
+\section{Cel badań} % TODO: coś mało, ale idk
+
+Ideą projektu jest umożliwienie weryfikacji jakości sposobów rozpoznawania prostych kształtów różnymi metodami. Ponadto, poszczególne podejścia będą mogły zostać porównane pomiędzy sobą, co potencjalnie pozwoli na wyłonienie lepszego.
+
+\section{Planowane do wykorystania technologie}
+
+Językiem programowania, który zdecydowano się wykorzystać, jest język skryptowy \textbf{Python} w~wersji 3.5.2.
+Jest to~uwarunkowane między innymi sporymi możliwościami tego języka w~zakresie przetwarzania i~analizy danych, wygodą programowania i~przenośnością stworzonych rozwiązań.\\
+
+Planowane jest zaimplementowanie dwóch podejść pozwalających na rozwiązanie postawionego problemu. Jedno z nich będzie wykorzystywać czyste możliwości biblioteki \textbf{OpenCV} w celu analizy obrazów i znajdowania kształtów. Drugie rozwiązanie będzie bazować na sieci neuronowej dostarczonej przez bibliotekę \textbf{Keras}. Model sieci zostanie stworzony i nauczony od zera na~wybranych na potrzeby projektu danych.\\
+
+W~celu uproszczenia pracy z~danymi oraz~ich analizy, przydatne mogą okazać się moduła Pythona takie jak: \textbf{pandas}, \textbf{NumPy} oraz \textbf{Matplotlib}.\\
+
+W~poniższej tabeli zestawiono wspomniane biblioteki wraz z ich wersjami oraz określono licencje, na~których zostały udostępnione.
+\begin{table}[H]
+    \begin{tabularx}{\textwidth}{|c|l|X|l|c|}
+        \hline
+        \textbf{Nr} & \textbf{Komponent, wersja} & \textbf{Opis} & \textbf{Licencja} & \\
+        \hline
+        \hline
+        1 &
+        Keras, 2.1.4 &
+        Biblioteka udostępniająca sieci neuronowe &
+        MIT License &
+        \cite{keras} \\
+        \hline
+        2 & 
+        Matplotlib, 2.1.0 & 
+        Umożliwia tworzenie wykresów &
+        Matplotlib License &
+        \cite{matplotlib} \\
+        \hline
+        3 & 
+        NumPy, 1.13.3 &
+        Używana do~efektywnych obliczeń na~wektorach $n$-wymiarowych &
+        BSD License &
+        \cite{numpy} \\
+        \hline
+        4 & 
+        OpenCV, 3.3.0 &
+        Biblioteka do~obróbki obrazów &
+        New BSD License &
+        \cite{opencv} \\
+        \hline
+        5 &
+        pandas, 0.21.0 &
+        Wspomaga ładowanie danych z~plików CSV oraz~ich analizę &
+        BSD License &
+        \cite{pandas} \\
+        \hline
+    \end{tabularx}
+    \caption{Wykorzystane biblioteki wraz z~określeniem licencji}
+\end{table}
+
+\section{Opis danych}
+
+Do realizacji projektu wybrano zbiór danych \textbf{Four Shapes} \cite{shapes}. Zbiór ten zawiera 16 tysięcy zdjęć w rozdzielczości $200 \times 200$, na których znajdują się cztery kształty: trójkąt, kwadrat, koło i gwiazda.\\
+
+Dane zostały zebrane przy pomocy kamery. Autor wyciął kartonowe szablony każdego z kształtów, pomalował je na zielono, a następnie nagrał cztery dwuminutowe filmy, w których podnosił i obracał każdy z kształtów. Przy pomocy biblioteki OpenCV w języku Python kształty zostały wycięte i przeskalowane do pożądanych rozmiarów. Na koniec nagrany został piąty -- testowy -- film, który może posłużyć do weryfikacji nauczonych modeli.\\
+
+Poza wspomnianym powyżej zbiorem treningowym, w trakcie projektu zostaną wykorzystane także autorskie obrazy zawierające proste kształty -- zarówno szukane jak i inne -- w celu weryfikacji możliwości stworzonych rozwiązań.
+
+\section{Sposób weryfikacji rezultatów} % TODO: też trochę mało, ale nie wiem co tu dodać
+
+Jednym z kryteriów jakości klasyfikacji kształtów przez każde z rozwiązań będzie ich dokładność (ang. accuracy), czyli stosunek poprawnie zidentyfikowanych lub poprawnie odrzuconych kształtów do wszystkich rozważanych. Rozsądnym jest stwierdzenie, że oczekujemy jak najlepszych wyników.\\
+
+Dodatkowym aspektem, który będzie brany pod uwagę jest wydajność. Docelowo projekt przewiduje rozszerzenie każdej z metod na analizę obrazów ze strumienia wideo w czasie rzeczywistym. Na tym etapie nie jest możliwe stwierdzenie, czy będzie to możliwe w przypadku obu metod, jednak zostanie to zbadane i opisane po przeprowadzeniu testów.
+
+\begin{thebibliography}{9} % TODO: może jakaś literatura, żeby rozszerzyć opis problemu
+
+    \bibitem{keras}
+        Chollet F., Keras Team:
+        Keras -- Deep Learning for humans.
+        Oficjalna strona: \url{https://keras.io}
+
+    \bibitem{opencv}
+        Intel Corporation, Willow Garage, Itseez:
+        OpenCV -- Open Source Computer Vision.
+        Oficjalna strona: \url{https://opencv.org}.
+        [Dostęp 17~marca 2018]
+
+    \bibitem{matplotlib}
+        Matplotlib Development Team:
+        Matplotlib.
+        Oficjalna strona: \url{https://matplotlib.org}.
+        [Dostęp 17~marca 2018]
+
+    \bibitem{pandas}
+        McKinney W.:
+        pandas -- Python Data Analysis Library.
+        Oficjalna strona: \url{https://pandas.pydata.org}.
+        [Dostęp 17~marca 2018]
+
+    \bibitem{numpy}
+        Oliphant T.:
+        NumPy.
+        Oficjalna strona: \url{http://www.numpy.org}.
+        [Dostęp 17~marca 2018]
+
+    \bibitem{shapes}
+        smeschke:
+        Four Shapes dataset.
+        Dostępny: \url{https://www.kaggle.com/smeschke/four-shapes}.
+        [Dostęp 17~marca 2018]
+
+\end{thebibliography}
+
+\end{document}
