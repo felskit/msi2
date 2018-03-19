@@ -38,9 +38,9 @@ Projekt realizowany będzie w~dwuosobowej grupie, w~składzie:
 
 \section{Opis problemu badawczego}
 
-Uczenie maszynowe znajduje szerokie zastosowania w dziedzinie rozpoznawania obiektów. Istnieje niezliczona ilość podejść do tego problemu, nierzadko różniących się znacząco wykorzystywanymi technikami i technologiami. Wszystkie bazują jednak na znajdowaniu pewnego rodzaju podobieństwa na obrazach i stwierdzaniu czy mamy do czynienia z tą samą cechą.\\
+Uczenie maszynowe znajduje szerokie zastosowania w dziedzinie rozpoznawania obiektów. Istnieje niezliczona ilość podejść do tego problemu, nierzadko różniących się znacząco wykorzystywanymi technikami i technologiami. Wszystkie bazują jednak na~znajdowaniu charakterystycznych cech obrazów wejściowych i stwierdzaniu czy na~obu z~nich mamy do~czynienia z tą samą cechą.
 
-Niniejszy projekt będzie ograniczał się jedynie do~rozpoznawania prostych kształtów geometrycznych takich jak: trójkąt, kwadrat, koło, gwiazda. Kształty będą mogły znajdować się na obrazach w~różnych miejscach, w~innej skali i orientacji oraz po~kilka na~jednym obrazie. Docelowo planowane jest umożliwienie nie tylko wczytanie i~rozpoznanie kształtu na~pojedynczym obrazie, ale również rozpoznawanie kształtów na~strumieniu wideo w~czasie rzeczywistym. Będzie to także jedno z~kryteriów oceny rozwiązania.
+Niniejszy projekt będzie ograniczał się jedynie do~rozpoznawania prostych kształtów geometrycznych takich jak: trójkąt, kwadrat, koło, gwiazda. Kształty będą mogły znajdować się na obrazach w~różnych miejscach, w~innej skali i orientacji oraz po~kilka na~jednym obrazie. Docelowo planowane jest umożliwienie nie tylko wczytania i~rozpoznania kształtu na~pojedynczym obrazie, ale również rozpoznawania kształtów na~strumieniu wideo w~czasie rzeczywistym. Będzie to także jedno z~kryteriów oceny rozwiązania.
 
 \section{Cel badań} % TODO: coś mało, ale idk
 
@@ -100,15 +100,15 @@ W~poniższej tabeli zestawiono wspomniane biblioteki wraz z ich wersjami oraz ok
 
 Do realizacji projektu wybrano zbiór danych \textbf{Four Shapes} \cite{shapes}. Zbiór ten zawiera 16 tysięcy zdjęć w rozdzielczości $200 \times 200$, na których znajdują się cztery kształty: trójkąt, kwadrat, koło i gwiazda.\\
 
-Dane zostały zebrane przy pomocy kamery. Autor wyciął kartonowe szablony każdego z kształtów, pomalował je na zielono, a następnie nagrał cztery dwuminutowe filmy, w których podnosił i obracał każdy z kształtów. Przy pomocy biblioteki OpenCV w języku Python kształty zostały wycięte i przeskalowane do docelowych rozmiarów. Na koniec nagrany został piąty --- testowy --- film, który posłuży do weryfikacji nauczonych modeli.\\
+Dane zostały zebrane przy pomocy kamery. Autor wyciął kartonowe szablony każdego z kształtów, pomalował je na zielono, a następnie nagrał cztery dwuminutowe filmy, w których podnosił i obracał każdy z kształtów. Przy pomocy biblioteki OpenCV w języku Python kształty zostały wycięte i przeskalowane do docelowych rozmiarów. Na koniec nagrany został piąty, testowy film, który posłuży do weryfikacji poprawności i~wydajności działania nauczonych modeli.\\
 
-Poza wspomnianym powyżej zbiorem treningowym, w trakcie projektu zostaną wykorzystane także autorskie obrazy zawierające proste kształty --- zarówno szukane jak i inne --- w celu weryfikacji możliwości stworzonych rozwiązań.
+Poza wspomnianym powyżej zbiorem treningowym, w trakcie projektu zostaną wykorzystane także autorskie obrazy zawierające proste kształty --- zarówno szukane jak i inne --- w celu sprawdzenia stworzonych rozwiązań.
 
 \section{Sposób weryfikacji rezultatów} % TODO: też trochę mało, ale nie wiem co tu dodać
 
-Jednym z kryteriów jakości klasyfikacji kształtów przez każde z rozwiązań będzie ich dokładność (ang. \emph{accuracy}), czyli stosunek poprawnie zidentyfikowanych lub poprawnie odrzuconych kształtów do wszystkich rozważanych. Rozsądnym jest stwierdzenie, że oczekujemy jak najlepszych wyników.\\
+Jednym z kryteriów jakości klasyfikacji kształtów przez każde z rozwiązań będzie ich dokładność (ang. \emph{accuracy}), czyli stosunek poprawnie zidentyfikowanych oraz~poprawnie odrzuconych kształtów do wszystkich rozważanych. Rozsądnym jest stwierdzenie, że oczekujemy jak najlepszych wyników.\\
 
-Dodatkowym aspektem, który będzie brany pod uwagę jest wydajność. Docelowo projekt przewiduje rozszerzenie każdej z metod na analizę obrazów ze strumienia wideo w czasie rzeczywistym. Na tym etapie nie jest możliwe stwierdzenie, czy będzie to możliwe w przypadku obu metod, jednak zostanie to zbadane i opisane po przeprowadzeniu testów.
+Dodatkowym aspektem, który będzie brany pod uwagę jest wydajność. Docelowo projekt przewiduje zaadoptowanie każdej z metod na analizę obrazów do~użycia ze~strumieniem wideo w~czasie rzeczywistym. Na tym etapie nie jest możliwe stwierdzenie, czy będzie to możliwe w przypadku obu metod, jednak zostanie to zbadane i opisane po przeprowadzeniu testów.
 
 \begin{thebibliography}{9}
 
