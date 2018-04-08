@@ -16,10 +16,7 @@ class GeometricClassifier:
         :return: Type of shape classified on the input image.
         :rtype: ShapeType
         """
-        contours = cv2.findContours(image, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-        if len(contours) < 2:
-            return None
-        contours = contours[1]
+        _, contours, _ = cv2.findContours(image, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         if len(contours) != 1:
             return None
         contour = contours[0]
@@ -28,13 +25,13 @@ class GeometricClassifier:
         if len(approximation) == 3:
             return ShapeType.TRIANGLE
         if len(approximation) == 4:
-            return self.check_aspect_ratio(approximation)
+            return self._check_aspect_ratio(approximation)
         if len(approximation) == 10:
-            return self.check_star(approximation)
-        return self.check_circle(contour, perimeter)
+            return self._check_star(approximation)
+        return self._check_circle(contour, perimeter)
 
     @staticmethod
-    def check_aspect_ratio(approximation):
+    def _check_aspect_ratio(approximation):
         """
         Checks whether the supplied approximated contour is roughly a square.
 
@@ -46,7 +43,7 @@ class GeometricClassifier:
         return ShapeType.SQUARE if 0.8 <= aspect_ratio <= 1.2 else None
 
     @staticmethod
-    def check_star(approximation):
+    def _check_star(approximation):
         """
         Checks whether the supplied approximated contour is roughly a star.
 
@@ -69,7 +66,7 @@ class GeometricClassifier:
             return None
 
     @staticmethod
-    def check_circle(contour, perimeter):
+    def _check_circle(contour, perimeter):
         """
         Checks whether the supplied approximated contour is roughly a circle.
 
