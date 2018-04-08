@@ -81,4 +81,4 @@ class GeometricClassifier:
         if np.abs(radius_from_area - radius_from_perimeter) <= 25:
             return ShapeType.CIRCLE
         else:
-            return ShapeType.TRIANGLE
+            return None
