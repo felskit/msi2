@@ -31,10 +31,12 @@ class ShapeExtractor:
         regions = []
         # draw shapes on separate images
         for contour in contours:
-            regions.append(self._countour_to_image(contour))
+            region = self._contour_to_image(contour)
+            if region is not None:
+                regions.append(region)
         return regions
 
-    def _countour_to_image(self, contour):
+    def _contour_to_image(self, contour):
         """
         Converts information about shape contour to single-channel black and white image.
         The shape will be white on black background with small margin around it.
@@ -47,6 +49,8 @@ class ShapeExtractor:
         max_x = contour[contour[:, :, 0].argmax()][0][0]
         min_y = contour[contour[:, :, 1].argmin()][0][1]
         max_y = contour[contour[:, :, 1].argmax()][0][1]
+        if max_x - min_x < 50 or max_y - min_y < 50:
+            return None
         # TODO: change margins value or reduce to 1px at all
         # calculate the margin that shape will have on the output image
         x_margin = int(0.05 * (max_x - min_x))
