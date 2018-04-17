@@ -26,13 +26,13 @@ class GeometricClassifier:
         if len(approximation) == 3:
             return ShapeType.TRIANGLE
         if len(approximation) == 4:
-            return self._check_aspect_ratio(approximation)
+            return self._check_square(approximation)
         if len(approximation) == 10:
             return self._check_star(approximation)
         return self._check_circle(contour, perimeter)
 
     @staticmethod
-    def _check_aspect_ratio(approximation):
+    def _check_square(approximation):
         """
         Checks whether the supplied approximated contour is roughly a square.
 
@@ -41,7 +41,16 @@ class GeometricClassifier:
         """
         (_, _, width, height) = cv2.boundingRect(approximation)
         aspect_ratio = width / height
-        return ShapeType.SQUARE if 0.8 <= aspect_ratio <= 1.2 else None
+        perimeter = cv2.arcLength(approximation, True)
+        moments = cv2.moments(approximation)
+        area = moments['m00']
+        side_from_perimeter = perimeter / 4
+        side_from_area = np.sqrt(area)
+        if np.abs(side_from_perimeter - side_from_area) <= 15 and 0.8 <= aspect_ratio <= 1.2:
+            return ShapeType.SQUARE
+        else:
+            return None
+
 
     @staticmethod
     def _check_star(approximation):
