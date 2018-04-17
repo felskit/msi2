@@ -3,6 +3,8 @@ import argparse
 import cv2
 import os
 
+import numpy as np
+
 from src.classifiers.geometric import GeometricClassifier
 from src.common.extractor import ShapeExtractor
 from src.data.types import ShapeType
@@ -19,7 +21,9 @@ arguments = parser.parse_args()
 if not os.path.isdir(arguments.directory):
     raise ValueError("Supplied path is not a directory")
 
-extractor = ShapeExtractor()
+lower = np.array([240])
+upper = np.array([255])
+extractor = ShapeExtractor(lower, upper)
 classifier = GeometricClassifier()
 
 for (basedir, _, filenames) in os.walk(arguments.directory):

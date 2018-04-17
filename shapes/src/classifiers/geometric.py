@@ -5,17 +5,18 @@ from src.data.types import ShapeType
 
 
 class GeometricClassifier:
-    def classify(self, image):
+    def classify(self, region):
         """
         Performs classification on a single input image.
-        The input image should be thresholded (only 1 bit per pixel allowed).
-        The input image should contain one white shape on a black background.
+        The input region image should be thresholded (only 1 bit per pixel allowed).
+        The input region image should contain one white shape on a black background.
 
-        :param image: Input image pixel data.
-        :type image: numpy.ndarray
+        :param region: The region being classified.
+        :type region: src.data.types.Region
         :return: Type of shape classified on the input image.
         :rtype: ShapeType
         """
+        image = region.image
         _, contours, _ = cv2.findContours(image, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         if len(contours) != 1:
             return None

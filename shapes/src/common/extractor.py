@@ -1,15 +1,17 @@
 import cv2
 import numpy as np
 
+from src.data.types import Region
+
 
 class ShapeExtractor:
     """
     Module used to extract regions of image that contain potential shapes.
     """
 
-    def __init__(self):
-        self.lower = np.array([240])
-        self.upper = np.array([255])
+    def __init__(self, lower, upper):
+        self.lower = lower
+        self.upper = upper
 
     def get_regions(self, image):
         """
@@ -42,7 +44,9 @@ class ShapeExtractor:
         The shape will be white on black background with small margin around it.
 
         :param contour: Shape contour to convert.
+        :type contour: numpy.ndarray
         :return: Image representing region of the image with the shape
+        :rtype: Region
         """
         # calculate extreme points of the contour
         min_x = contour[contour[:, :, 0].argmin()][0][0]
@@ -60,4 +64,9 @@ class ShapeExtractor:
         # fill provided contour
         cv2.fillPoly(image, pts=[contour], color=255)
         # crop the image based on margin
-        return image[max(min_y - y_margin, 0):(max_y + y_margin), max(min_x - x_margin, 0):(max_x + x_margin)]
+        x1 = max(min_x - x_margin, 0)
+        x2 = min(max_x + x_margin, image.shape[1])
+        y1 = max(min_y - y_margin, 0)
+        y2 = min(max_y + y_margin, image.shape[0])
+        image = image[y1:y2, x1:x2]
+        return Region(image, x1, x2, y1, y2)
