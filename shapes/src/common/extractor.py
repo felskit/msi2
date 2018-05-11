@@ -53,20 +53,32 @@ class ShapeExtractor:
         max_x = contour[contour[:, :, 0].argmax()][0][0]
         min_y = contour[contour[:, :, 1].argmin()][0][1]
         max_y = contour[contour[:, :, 1].argmax()][0][1]
+
         if max_x - min_x < 50 or max_y - min_y < 50:
             return None
-        # TODO: change margins value or reduce to 1px at all
+
+        # TODO: adjust margin value
         # calculate the margin that shape will have on the output image
-        x_margin = int(0.05 * (max_x - min_x))
-        y_margin = int(0.05 * (max_y - min_y))
+        x_margin = int(0.33 * (max_x - min_x))
+        y_margin = int(0.33 * (max_y - min_y))
+
+        # hack to make the image always square
+        size = max((max_x - min_x), (max_y - min_y))
+        max_x = min_x + size
+        max_y = min_y + size
+        margin = max(x_margin, y_margin)
+
         # create a new single-channel black image
-        image = np.uint8(np.zeros((max_y + y_margin, max_x + x_margin)))
+        image = np.uint8(np.zeros((max_y + margin, max_x + margin)))
         # fill provided contour
-        cv2.fillPoly(image, pts=[contour], color=255)
+        cv2.fillPoly(image, pts=[contour], color=255)  # TODO: convex hull fill
+
         # crop the image based on margin
-        x1 = max(min_x - x_margin, 0)
-        x2 = min(max_x + x_margin, image.shape[1])
-        y1 = max(min_y - y_margin, 0)
-        y2 = min(max_y + y_margin, image.shape[0])
+        x1 = max(min_x - margin, 0)
+        x2 = min(max_x + margin, image.shape[1])
+        y1 = max(min_y - margin, 0)
+        y2 = min(max_y + margin, image.shape[0])
+        # TODO: because of the above the image may not always be square
+
         image = image[y1:y2, x1:x2]
         return Region(image, x1, x2, y1, y2)

@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 
 from src.classifiers.geometric import GeometricClassifier
+from src.classifiers.network import NetworkClassifier
 from src.common.extractor import ShapeExtractor
 
 capture = cv2.VideoCapture(0)
@@ -9,7 +10,7 @@ lower = np.array([0, 50, 50])
 upper = np.array([15, 255, 255])
 highlight_color = (0, 255, 0)
 extractor = ShapeExtractor(lower, upper)
-classifier = GeometricClassifier()
+classifier = NetworkClassifier()
 
 
 def draw_recognized_region(frame, region, result):

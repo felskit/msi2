@@ -1,11 +1,11 @@
+import numpy as np
 import argparse
-
 import cv2
 import os
 
-import numpy as np
 
 from src.classifiers.geometric import GeometricClassifier
+from src.classifiers.network import NetworkClassifier
 from src.common.extractor import ShapeExtractor
 from src.data.types import ShapeType
 
@@ -14,7 +14,7 @@ parser.add_argument(
     "-d",
     "--directory",
     required=True,
-    help="path of directory with testing outlines"
+    help="path to directory with testing outlines"
 )
 arguments = parser.parse_args()
 
@@ -24,7 +24,7 @@ if not os.path.isdir(arguments.directory):
 lower = np.array([240])
 upper = np.array([255])
 extractor = ShapeExtractor(lower, upper)
-classifier = GeometricClassifier()
+classifier = NetworkClassifier()
 
 for (basedir, _, filenames) in os.walk(arguments.directory):
     results = {
