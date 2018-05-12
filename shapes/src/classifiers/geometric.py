@@ -4,7 +4,11 @@ import numpy as np
 
 
 class GeometricClassifier:
-    def classify(self, region):
+    """
+    OpenCV geometric classifier.
+    """
+
+    def classify(self, region, verbose=False):
         """
         Performs classification on a single input image.
         The input region image should be thresholded (only 1 bit per pixel allowed).
@@ -12,16 +16,28 @@ class GeometricClassifier:
 
         :param region: The region being classified.
         :type region: src.data.types.Region
+        :param verbose: Specifies whether the classified image should be shown in a separate window.
+        :type verbose: bool
         :return: Type of shape classified on the input image.
         :rtype: ShapeType
         """
         image = region.image
+        if verbose:
+            cv2.imshow("", image * 255)
+
+        # find shape contours
         _, contours, _ = cv2.findContours(image, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+        # ignore if the image doesn't have exactly one shape
         if len(contours) != 1:
             return None
+
+        # approximate the contour
         contour = contours[0]
         perimeter = cv2.arcLength(contour, True)
         approximation = cv2.approxPolyDP(contour, 0.03 * perimeter, True)
+
+        # verify the approximation
         if len(approximation) == 3:
             return ShapeType.TRIANGLE
         if len(approximation) == 4:

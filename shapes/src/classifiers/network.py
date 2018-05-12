@@ -1,34 +1,54 @@
 from keras.models import load_model
-from src.common.config import config
 from src.data.types import ShapeType
 import cv2
 import numpy as np
 
-img_size = 64
-model = load_model('./model/shapes_model.h5')
-data_dim = np.prod([img_size, img_size])
-
 
 class NetworkClassifier:
-    def __init__(self):
-        self.image_size = 64
+    """
+    Neural network classifier.
+    """
 
-    def classify(self, region):
+    def __init__(self, model_dir, flatten):
+        """
+        Classifier constructor.
+
+        :param model_dir: Neural network model directory.
+        :type model_dir: str
+        :param flatten: Specifies whether input image should be flattened (for a model that recognizes 1D vectors)
+                        or kept as a 2D image (for a model that recognizes 2D images).
+        :type flatten: bool
+        """
+        self.model = load_model(model_dir)
+        self.flatten = flatten
+        self.prediction_threshold = 0.95
+
+    def classify(self, region, verbose=False):
+        """
+        Performs classification on a single input image using a neural network.
+        The input region image should be thresholded (only 1 bit per pixel allowed).
+        The input region image should contain one black shape on a white background.
+
+        :param region: The region being classified.
+        :type region: src.data.types.Region
+        :param verbose: Specifies whether the classified image should be shown in a separate window.
+        :type verbose: bool
+        :return: Type of shape classified on the input image.
+        :rtype: ShapeType
+        """
         image = region.image
-        image_size = config["image_size"]
-        image = cv2.resize(image, (image_size, image_size))
+        if verbose:
+            cv2.imshow("", image * 255)
 
-        # show image conditionally
-        cv2.imshow("", image * 255)
-
-        image = image.reshape(1, data_dim)
-        image = image.astype('float32')
+        # flatten the image
+        if self.flatten:
+            image = image.reshape(1, np.prod([image.shape]))
 
         # feed image into model
-        prediction = model.predict(image)[0].tolist()
+        prediction = self.model.predict(image)[0].tolist()
 
-        p_val = .95
-        if max(prediction) > p_val:
+        # verify the prediction
+        if max(prediction) > self.prediction_threshold:
             if prediction[0] == max(prediction):
                 return ShapeType.CIRCLE
             if prediction[1] == max(prediction):

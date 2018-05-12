@@ -13,9 +13,9 @@ class ShapeExtractor:
         self.lower = lower
         self.upper = upper
         self.image_margin = config["image_margin"]
-        self.bounding_box_margin = config["image_margin"]
+        self.bounding_box_margin = config["bounding_box_margin"]
 
-    def get_regions(self, image, mode):
+    def get_regions(self, image, mode, output_shape):
         """
         Performs threshold filtering on provided image to find near-white shapes.
         Each shape is redrawn based on its contour in a separate image.
@@ -25,6 +25,8 @@ class ShapeExtractor:
         :type image: numpy.ndarray
         :param mode: Color scheme to be used during region extraction.
         :type mode: types.FillMode
+        :param output_shape: Shape of the output region images.
+        :type output_shape: tuple
         :return: List of images representing regions of the image with shapes.
         :rtype: list
         """
@@ -39,13 +41,13 @@ class ShapeExtractor:
 
         # draw shapes on separate images
         for contour in contours:
-            region = self._contour_to_image(contour, mode, image.shape)
+            region = self._contour_to_image(contour, mode, output_shape, image.shape)
             if region is not None:
                 regions.append(region)
 
         return regions
 
-    def _contour_to_image(self, contour, mode, shape):
+    def _contour_to_image(self, contour, mode, output_shape, input_shape):
         """
         Converts information about shape contour to single-channel black and white image.
         The shape will be white on black background with small margin around it.
@@ -54,8 +56,10 @@ class ShapeExtractor:
         :type contour: numpy.ndarray
         :param mode: Color scheme to be used during region extraction.
         :type mode: types.FillMode
-        :param mode: Shape of the captured image.
-        :type mode: tuple
+        :param output_shape: Shape of the output region image.
+        :type output_shape: tuple
+        :param input_shape: Shape of the captured image.
+        :type input_shape: tuple
         :return: Image representing region of the image with the shape
         :rtype: types.Region
         """
@@ -65,7 +69,7 @@ class ShapeExtractor:
         min_y = contour[contour[:, :, 1].argmin()][0][1]
         max_y = contour[contour[:, :, 1].argmax()][0][1]
 
-        # TODO: improve
+        # TODO: improve (contours that are scattered / have many holes should be ignored)
         # ignore this shape if it doesn't meet the requirements
         if max_x - min_x < 50 or max_y - min_y < 50:
             return None
@@ -97,7 +101,7 @@ class ShapeExtractor:
             raise ValueError("Expected FillMode.BLACK_ON_WHITE or FillMode.WHITE_ON_BLACK, got " + str(mode))
         image = np.uint8(background)
 
-        # TODO: fill holes
+        # TODO: fill holes in the contour (in a way that doesn't change extreme points or we'll need to calculate again)
 
         # convert the contour to fit the output image
         for i, _ in enumerate(contour):
@@ -107,15 +111,13 @@ class ShapeExtractor:
         # fill provided contour
         cv2.fillPoly(image, pts=[contour], color=fill_color)
 
-        # TODO: resizing here breaks the geometric classifier :(
         # resize the image to spare some memory
-        # image_size = config["image_size"]
-        # image = cv2.resize(image, (image_size, image_size))
+        image = cv2.resize(image, (output_shape[0], output_shape[1]))
 
         # calculate the bounding box extreme points
         x1 = max(min_x - self.bounding_box_margin, 0)
-        x2 = min(max_x + self.bounding_box_margin, shape[1])
+        x2 = min(max_x + self.bounding_box_margin, input_shape[1])
         y1 = max(min_y - self.bounding_box_margin, 0)
-        y2 = min(max_y + self.bounding_box_margin, shape[0])
+        y2 = min(max_y + self.bounding_box_margin, input_shape[0])
 
         return Region(image, x1, x2, y1, y2)
