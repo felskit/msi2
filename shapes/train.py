@@ -1,17 +1,11 @@
-import numpy as np
+from keras.layers import BatchNormalization, Conv2D, Dense, Dropout, MaxPooling2D
+from keras.models import Sequential
+from keras.utils import to_categorical
+from random import shuffle
 import argparse
 import cv2
+import numpy as np
 import os
-
-from keras.utils import to_categorical
-from keras.models import Sequential
-from keras.layers import BatchNormalization
-from keras.layers import Conv2D
-from keras.layers import Dense
-from keras.layers import Dropout
-from keras.layers import MaxPooling2D
-
-from random import shuffle
 
 image_size = 64
 folders = []

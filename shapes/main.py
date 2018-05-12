@@ -1,13 +1,12 @@
-import numpy as np
-import argparse
-import cv2
-import os
-
-
 from src.classifiers.geometric import GeometricClassifier
 from src.classifiers.network import NetworkClassifier
 from src.common.extractor import ShapeExtractor
-from src.data.types import ShapeType
+from src.data.types import FillMode, ShapeType
+
+import argparse
+import cv2
+import numpy as np
+import os
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -24,7 +23,7 @@ if not os.path.isdir(arguments.directory):
 lower = np.array([240])
 upper = np.array([255])
 extractor = ShapeExtractor(lower, upper)
-classifier = NetworkClassifier()
+classifier = GeometricClassifier()
 
 for (basedir, _, filenames) in os.walk(arguments.directory):
     results = {
@@ -37,7 +36,7 @@ for (basedir, _, filenames) in os.walk(arguments.directory):
     for filename in filenames:
         full_path = os.path.join(basedir, filename)
         image = cv2.imread(full_path, flags=cv2.IMREAD_GRAYSCALE)
-        regions = extractor.get_regions(image)
+        regions = extractor.get_regions(image, FillMode.WHITE_ON_BLACK)
         for region in regions:
             result = classifier.classify(region)
             results[result] += 1

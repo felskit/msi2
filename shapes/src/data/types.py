@@ -5,6 +5,7 @@ class Region:
     """
     Represents a single thresholded region to be supplied to a classifier.
     """
+
     def __init__(self, image, x1, x2, y1, y2):
         """
         Constructor for the region.
@@ -35,3 +36,11 @@ class ShapeType(Enum):
     SQUARE = "square"
     STAR = "star"
     CIRCLE = "circle"
+
+
+class FillMode(Enum):
+    """
+    Enumeration type used by ShapeExtractor to determine output color scheme.
+    """
+    BLACK_ON_WHITE = 0
+    WHITE_ON_BLACK = 1

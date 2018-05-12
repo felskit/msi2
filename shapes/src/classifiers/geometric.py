@@ -1,7 +1,6 @@
+from src.data.types import ShapeType
 import cv2
 import numpy as np
-
-from src.data.types import ShapeType
 
 
 class GeometricClassifier:
@@ -50,7 +49,6 @@ class GeometricClassifier:
             return ShapeType.SQUARE
         else:
             return None
-
 
     @staticmethod
     def _check_star(approximation):
