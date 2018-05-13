@@ -6,6 +6,8 @@ from src.data.types import FillMode
 import cv2
 import numpy as np
 
+# TODO: possibly refactor this a bit (some generic CameraCapture class that can be used later in the "time trial")
+
 capture = cv2.VideoCapture(0)  # TODO: what is this 0?
 lower = np.array([0, 50, 50])
 upper = np.array([15, 255, 255])

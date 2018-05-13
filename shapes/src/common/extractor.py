@@ -51,6 +51,7 @@ class ShapeExtractor:
         """
         Converts information about shape contour to single-channel black and white image.
         The shape will be white on black background with small margin around it.
+        Returned image pixels are in [0,1] range.
 
         :param contour: Shape contour to convert.
         :type contour: numpy.ndarray
@@ -69,7 +70,7 @@ class ShapeExtractor:
         min_y = contour[contour[:, :, 1].argmin()][0][1]
         max_y = contour[contour[:, :, 1].argmax()][0][1]
 
-        # TODO: improve (contours that are scattered / have many holes should be ignored)
+        # TODO: improve this (contours that are scattered / have many holes should be ignored)
         # ignore this shape if it doesn't meet the requirements
         if max_x - min_x < 50 or max_y - min_y < 50:
             return None
@@ -112,7 +113,7 @@ class ShapeExtractor:
         cv2.fillPoly(image, pts=[contour], color=fill_color)
 
         # resize the image to spare some memory
-        image = cv2.resize(image, (output_shape[0], output_shape[1]))
+        image = cv2.resize(image, output_shape)
 
         # calculate the bounding box extreme points
         x1 = max(min_x - self.bounding_box_margin, 0)

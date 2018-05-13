@@ -42,7 +42,7 @@ class NetworkClassifier:
 
         # flatten the image
         if self.flatten:
-            image = image.reshape(1, np.prod([image.shape]))
+            image = image.reshape(1, np.prod(image.shape))
 
         # feed image into model
         prediction = self.model.predict(image)[0].tolist()
