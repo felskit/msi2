@@ -40,7 +40,15 @@ class ShapeType(Enum):
 
 class FillMode(Enum):
     """
-    Enumeration type used by ShapeExtractor to determine output color scheme.
+    Enumeration type used by :class:`src.common.ShapeExtractor` to determine output color scheme.
     """
     BLACK_ON_WHITE = 0
     WHITE_ON_BLACK = 1
+
+
+class ContourProcessingMode(Enum):
+    """
+    Enumeration type used by :class:`src.common.ShapeExtractor` to determine contour processing mode.
+    """
+    NONE = 0
+    MORPHOLOGICAL_CLOSING = 1

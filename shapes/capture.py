@@ -2,7 +2,7 @@ from src.classifiers.geometric import GeometricClassifier
 from src.classifiers.network import NetworkClassifier
 from src.common.config import config
 from src.common.extractor import ShapeExtractor
-from src.data.types import FillMode
+from src.data.types import FillMode, ContourProcessingMode
 import cv2
 import numpy as np
 
@@ -44,7 +44,12 @@ while True:
     read, frame = capture.read()
     if read:
         hsv = cv2.cvtColor(frame, cv2.COLOR_RGB2HSV)
-        regions = extractor.get_regions(hsv, mode=FillMode.BLACK_ON_WHITE, output_shape=(image_size, image_size))
+        regions = extractor.get_regions(
+            hsv,
+            fill_mode=FillMode.BLACK_ON_WHITE,
+            contour_processing_mode=ContourProcessingMode.MORPHOLOGICAL_CLOSING,
+            output_shape=(image_size, image_size)
+        )
         for region in regions:
             result = classifier.classify(region, True)
             if result is not None:

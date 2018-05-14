@@ -1,5 +1,5 @@
 from src.common.config import config
-from src.data.types import FillMode, Region
+from src.data.types import FillMode, Region, ContourProcessingMode
 import cv2
 import numpy as np
 
@@ -15,7 +15,7 @@ class ShapeExtractor:
         self.image_margin = config["image_margin"]
         self.bounding_box_margin = config["bounding_box_margin"]
 
-    def get_regions(self, image, mode, output_shape):
+    def get_regions(self, image, fill_mode, output_shape, contour_processing_mode=ContourProcessingMode.NONE):
         """
         Performs threshold filtering on provided image to find near-white shapes.
         Each shape is redrawn based on its contour in a separate image.
@@ -23,15 +23,22 @@ class ShapeExtractor:
 
         :param image: Input image pixel data.
         :type image: numpy.ndarray
-        :param mode: Color scheme to be used during region extraction.
-        :type mode: types.FillMode
+        :param fill_mode: Color scheme to be used during region extraction.
+        :type fill_mode: FillMode
         :param output_shape: Shape of the output region images.
         :type output_shape: tuple
+        :param contour_processing_mode: Contour processing mode to use when thresholding input images.
+        :type contour_processing_mode: ContourProcessingMode
         :return: List of images representing regions of the image with shapes.
         :rtype: list
         """
         # perform threshold filtering to get shape mask
         shape_mask = cv2.inRange(image, self.lower, self.upper)
+
+        if contour_processing_mode == ContourProcessingMode.MORPHOLOGICAL_CLOSING:
+            # morphological closing to fill up gaps
+            kernel = np.ones((10, 10), np.uint8)
+            shape_mask = cv2.morphologyEx(shape_mask, cv2.MORPH_CLOSE, kernel)
 
         # get the contours of found shapes
         _, contours, _ = cv2.findContours(shape_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
@@ -41,7 +48,7 @@ class ShapeExtractor:
 
         # draw shapes on separate images
         for contour in contours:
-            region = self._contour_to_image(contour, mode, output_shape, image.shape)
+            region = self._contour_to_image(contour, fill_mode, output_shape, image.shape)
             if region is not None:
                 regions.append(region)
 
@@ -70,7 +77,6 @@ class ShapeExtractor:
         min_y = contour[contour[:, :, 1].argmin()][0][1]
         max_y = contour[contour[:, :, 1].argmax()][0][1]
 
-        # TODO: improve this (contours that are scattered / have many holes should be ignored)
         # ignore this shape if it doesn't meet the requirements
         if max_x - min_x < 50 or max_y - min_y < 50:
             return None
