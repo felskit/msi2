@@ -8,12 +8,12 @@ import numpy as np
 
 # TODO: possibly refactor this a bit (some generic CameraCapture class that can be used later in the "time trial")
 
-capture = cv2.VideoCapture(0)  # TODO: what is this 0?
+capture = cv2.VideoCapture(0)
 lower = np.array([0, 50, 50])
 upper = np.array([15, 255, 255])
 highlight_color = (0, 255, 0)
 extractor = ShapeExtractor(lower, upper)
-classifier = NetworkClassifier(model_dir="./model/shapes_model.h5", flatten=True)
+classifier = NetworkClassifier(model_dir="./model/shapes_model_1d_vec.h5", flatten=True)
 image_size = config["image_size_network"]
 
 

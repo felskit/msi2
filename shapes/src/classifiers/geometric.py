@@ -8,6 +8,11 @@ class GeometricClassifier:
     OpenCV geometric classifier.
     """
 
+    perimeter_tolerance = 0.03  # relative
+    dimension_tolerance = 8     # pixels
+    aspect_lower = 0.8          # relative
+    aspect_upper = 1.2          # relative
+
     def classify(self, region, verbose=False):
         """
         Performs classification on a single input image.
@@ -35,7 +40,7 @@ class GeometricClassifier:
         # approximate the contour
         contour = contours[0]
         perimeter = cv2.arcLength(contour, True)
-        approximation = cv2.approxPolyDP(contour, 0.03 * perimeter, True)
+        approximation = cv2.approxPolyDP(contour, self.perimeter_tolerance * perimeter, True)
 
         # verify the approximation
         if len(approximation) == 3:
@@ -46,8 +51,7 @@ class GeometricClassifier:
             return self._check_star(approximation)
         return self._check_circle(contour, perimeter)
 
-    @staticmethod
-    def _check_square(approximation):
+    def _check_square(self, approximation):
         """
         Checks whether the supplied approximated contour is roughly a square.
 
@@ -61,13 +65,13 @@ class GeometricClassifier:
         area = moments['m00']
         side_from_perimeter = perimeter / 4
         side_from_area = np.sqrt(area)
-        if np.abs(side_from_perimeter - side_from_area) <= 15 and 0.8 <= aspect_ratio <= 1.2:
+        if np.abs(side_from_perimeter - side_from_area) <= self.dimension_tolerance and \
+            self.aspect_lower <= aspect_ratio <= self.aspect_upper:
             return ShapeType.SQUARE
         else:
             return None
 
-    @staticmethod
-    def _check_star(approximation):
+    def _check_star(self, approximation):
         """
         Checks whether the supplied approximated contour is roughly a star.
 
@@ -84,13 +88,12 @@ class GeometricClassifier:
         # and then calculate the standard deviation over the even and odd vertices' distances
         first_deviation = np.std(distances[::2])
         second_deviation = np.std(distances[1::2])
-        if first_deviation <= 5 and second_deviation <= 5:
+        if first_deviation <= self.dimension_tolerance and second_deviation <= self.dimension_tolerance:
             return ShapeType.STAR
         else:
             return None
 
-    @staticmethod
-    def _check_circle(contour, perimeter):
+    def _check_circle(self, contour, perimeter):
         """
         Checks whether the supplied approximated contour is roughly a circle.
 
@@ -102,7 +105,7 @@ class GeometricClassifier:
         radius_from_perimeter = perimeter / (2 * np.pi)
         area = moments['m00']
         radius_from_area = np.sqrt(area / np.pi)
-        if np.abs(radius_from_area - radius_from_perimeter) <= 25:
+        if np.abs(radius_from_area - radius_from_perimeter) <= self.dimension_tolerance:
             return ShapeType.CIRCLE
         else:
             return None
