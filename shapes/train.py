@@ -1,4 +1,4 @@
-from keras.layers import Dense, Dropout
+from keras.layers import Dense, Dropout, Conv2D, Flatten
 from keras.models import Sequential
 from src.common.config import config
 from src.utils.trainer import NetworkTrainer
@@ -35,4 +35,20 @@ model.add(Dropout(0.4))
 model.add(Dense(classes, activation="softmax"))
 
 # train and save the model
-trainer.train_and_save(model, "./model/shapes_model_1d_vec.h5", batch_size=256, epochs=50, flatten=True, verbose=1)
+# trainer.train_and_save(model, "./model/shapes_model_1d_vec.h5", batch_size=256, epochs=50, flatten=True, verbose=1)
+
+# convolutional model
+model = Sequential()
+model.add(Conv2D(
+    input_shape=(image_shape[0], image_shape[1], 1),
+    filters=1,
+    kernel_size=8,
+    padding="valid",
+    activation="relu"
+))
+model.add(Dropout(0.2))
+model.add(Flatten())
+model.add(Dense(classes, activation="softmax"))
+
+# train and save the model
+trainer.train_and_save(model, "./model/shapes_model_2d_vec.h5", batch_size=256, epochs=50, flatten=False, verbose=1)

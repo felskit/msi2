@@ -52,6 +52,18 @@ class NetworkTrainer:
         images = np.array(images)  # probably unnecessary but warning otherwise
         return images.reshape(len(images), shape)
 
+    def _reshape_for_convolution(self, images):
+        """
+        Reshapes images for use with the convolutional model.
+
+        :param images: Numpy array of images.
+        :type images: numpy.array
+        :return: Reshaped Numpy array of images.
+        :type images: numpy.array
+        """
+        images = np.array(images)
+        return images.reshape(len(images), self.image_shape[0], self.image_shape[1], 1)
+
     def load_data(self, data_dir):
         """
         Initializes the trainer with training data.
@@ -127,8 +139,8 @@ class NetworkTrainer:
             train_data = self._flatten(self.train_images, data_shape)
             test_data = self._flatten(self.test_images, data_shape)
         else:
-            train_data = self.train_images
-            test_data = self.test_images
+            train_data = self._reshape_for_convolution(self.train_images)
+            test_data = self._reshape_for_convolution(self.test_images)
 
         # build the model
         model.compile(

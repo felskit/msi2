@@ -13,7 +13,7 @@ lower = np.array([0, 50, 50])
 upper = np.array([15, 255, 255])
 highlight_color = (0, 255, 0)
 extractor = ShapeExtractor(lower, upper)
-classifier = NetworkClassifier(model_dir="./model/shapes_model_1d_vec.h5", flatten=True)
+classifier = NetworkClassifier(model_dir="./model/shapes_model_2d_vec.h5", flatten=False)
 image_size = config["image_size_network"]
 
 
@@ -50,10 +50,11 @@ while True:
             contour_processing_mode=ContourProcessingMode.MORPHOLOGICAL_CLOSING,
             output_shape=(image_size, image_size)
         )
-        for region in regions:
-            result = classifier.classify(region, True)
-            if result is not None:
-                draw_recognized_region(frame, region, result)
+        if regions is not None:
+            for region in regions:
+                result = classifier.classify(region, True)
+                if result is not None:
+                    draw_recognized_region(frame, region, result)
         cv2.imshow('Shapes', frame)
     if is_key_pressed('q'):
         break
