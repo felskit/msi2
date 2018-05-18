@@ -45,11 +45,10 @@ class NetworkTrainer:
         :param images: Numpy array of images to be flattened.
         :type images: numpy.array
         :param shape: Dimension of the output vector.
-        :type shape: int
+        :type shape: numpy.array
         :return: Numpy array of 1D vectors representing the images.
         :rtype: numpy.array
         """
-        images = np.array(images)  # probably unnecessary but warning otherwise
         return images.reshape(len(images), shape)
 
     def _reshape_for_convolution(self, images):
@@ -80,7 +79,7 @@ class NetworkTrainer:
             folder = subdir[subdir.rfind("\\") + 1:]
             folders.append(folder)
             for file in files:
-                image = cv2.imread(os.path.join(subdir, file), 0)  # load training images in greyscale
+                image = cv2.imread(os.path.join(subdir, file), flags=cv2.IMREAD_GRAYSCALE)
                 images.append(cv2.resize(image, self.image_shape))
                 labels.append(folders.index(folder))
 
@@ -121,7 +120,7 @@ class NetworkTrainer:
         Can be reused to train multiple models after loading the training data once.
 
         :param model: Defined Sequential neural network model.
-        :type model: keras.models.Sequential TODO: ???
+        :type model: keras.models.Sequential
         :param path: Path to output model file.
         :type path: str
         :param batch_size: Batch size during training.

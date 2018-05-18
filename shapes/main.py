@@ -23,11 +23,11 @@ if not os.path.isdir(arguments.directory):
 
 lower = np.array([240])
 upper = np.array([255])
-extractor = ShapeExtractor(lower, upper)
+image_size = config["image_size"]
+extractor = ShapeExtractor(lower, upper, image_size)
 classifier = GeometricClassifier()
-image_size = config["image_size_geometric"]
 
-for (basedir, _, filenames) in os.walk(arguments.directory):
+for subdir, _, files in os.walk(arguments.directory):
     results = {
         ShapeType.TRIANGLE: 0,
         ShapeType.SQUARE: 0,
@@ -35,12 +35,12 @@ for (basedir, _, filenames) in os.walk(arguments.directory):
         ShapeType.CIRCLE: 0,
         None: 0
     }
-    for filename in filenames:
-        full_path = os.path.join(basedir, filename)
+    for file in files:
+        full_path = os.path.join(subdir, file)
         image = cv2.imread(full_path, flags=cv2.IMREAD_GRAYSCALE)
-        regions = extractor.get_regions(image, fill_mode=FillMode.WHITE_ON_BLACK, output_shape=(image_size, image_size))
+        regions = extractor.get_regions(image, fill_mode=FillMode.WHITE_ON_BLACK)
         for region in regions:
             result = classifier.classify(region)
             results[result] += 1
     print(results)
-    break
+    break  # test just one image

@@ -10,14 +10,15 @@ class CaptureWindow:
     highlight_color = (0, 255, 0)
     """The highlight color used to draw boxes and text."""
 
-    def __init__(self, device_number):
+    def __init__(self, device_id):
         """
         Initializes the capture window.
 
-        :param device_number: The number of the device to use for capturing.
-        :type device_number: int
+        :param device_id: The number identifying the device to use for capturing.
+        :type device_id: int
         """
-        self.capture = cv2.VideoCapture(device_number)
+        # noinspection PyArgumentList
+        self.capture = cv2.VideoCapture(device_id)
         self.running = True
         self.frame = None
         # insert your key bindings here
@@ -75,18 +76,6 @@ class CaptureWindow:
         self.capture.release()
         cv2.destroyAllWindows()
 
-    @staticmethod
-    def _is_key_pressed(key):
-        """
-        Determines whether a character key has been pressed.
-
-        :param key: The character key to be checked.
-        :type key: char
-        :return: True, if the character key is pressed; false otherwise.
-        :rtype: bool
-        """
-        return cv2.waitKey(1) & 0xff == ord(key)
-
     def draw_recognized_region(self, region, result):
         """
         Draws a recognized shape region on the most recent frame.
@@ -113,3 +102,15 @@ class CaptureWindow:
             self.highlight_color,
             2
         )
+
+    @staticmethod
+    def _is_key_pressed(key):
+        """
+        Determines whether a character key has been pressed.
+
+        :param key: The character key to be checked.
+        :type key: char
+        :return: True, if the character key is pressed; false otherwise.
+        :rtype: bool
+        """
+        return cv2.waitKey(1) & 0xff == ord(key)
