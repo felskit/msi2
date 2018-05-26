@@ -4,8 +4,10 @@
 \usepackage[utf8]{inputenc}
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage{subcaption}
 \usepackage{float}
 \usepackage{tabularx}
+\usepackage{graphicx}
 \usepackage[hidelinks]{hyperref}
 \usepackage[polish]{babel}
 
@@ -26,9 +28,52 @@
 \author{Bartłomiej Dach \and Tymon Felski}
 \maketitle
 
+Poniższy dokument zawiera końcowy opis projektu, którego celem jest zaimplementowanie rozwiązania pozwalającego na~detekcję i~rozpoznawanie prostych kształtów na~obrazach za~pomocą metod geometrycznych oraz z~użyciem sieci neuronowych i~porównanie skuteczności oraz~wydajności obu wariantów.
+
 \section{Opis problemu badawczego}
 
+Zagadnienie rozpoznawania obiektów na~obrazach z~użyciem metod sztucznej inteligencji stanowi duży obszar zainteresowań naukowych.
+Efektywne rozwiązanie tego zagadnienia pomogłoby usprawnić wiele procesów, dotychczas wymagających ludzkiej kontroli i~interwencji.
+
+W~niniejszym projekcie zbiór rozpoznawanych typów obiektów został zawężony do~czterech rodzajów kształtów geometrycznych: trójkąta, kwadratu, koła i~gwiazdy pięcioramiennej (patrz rys, \ref{fig:shapes}).
+Kształty mogą znajdować się w~dowolnej orientacji i~mieć dowolny rozmiar.
+Dla~uproszczenia zakładamy również, że kolor rozpoznawanych obiektów jest jednakowy i~znany \emph{a~priori}.
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[t]{0.2\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{res/img/triangle.png}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.2\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{res/img/square.png}
+    \end{subfigure}
+    \\
+    \begin{subfigure}[t]{0.2\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{res/img/star.png}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.2\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{res/img/circle.png}
+    \end{subfigure}
+    \caption{Przykładowe kształty ze~zbioru treningowego używanego do~treningu i~oceny jakości klasyfikatorów}
+    \label{fig:shapes}
+\end{figure}
+
 \subsection{Cel badań}
+
+Kształty geometryczne wykazują pewien stopień regularności, co~powoduje, że do~ich rozpoznawania można próbować zastosować algorytmy dokładne.
+Przykładem są zaimplementowane w~bibliotece OpenCV \cite{opencv}:
+\begin{itemize}
+    \item algorytm Suzukiego \cite{suzuki1985} do~wyznaczania konturów na~podstawie obrazów rastrowych,
+    \item algorytm Douglasa-Peuckera \cite{douglas1973} do~upraszczania konturów i~redukcji liczby punktów.
+\end{itemize}
+Dzięki tym dwóm algorytmom można na~podstawie binarnego obrazu wejściowego wyznaczyć kontur kształtu --- łamaną zamkniętą przybliżającą kształt wyznaczony przez piksele kształtu na~tle.
+
+Oprócz metod dokładnych, do~zagadnienia rozpoznawania można również użyć sieci neuronowych, które zamiast wiedzy dokładnej używają przygotowanych zbiorów treningowych oraz metod optymalizacji, aby~dokonać klasyfikacji.
+Celem badań jest porównanie wydajności i~skuteczności wybranych metod.
 
 \subsection{Wykorzystane techniki}
 
@@ -63,6 +108,15 @@
         Nowy Jork,
         1995.
 
+    \bibitem{douglas1973}
+        D.H. Douglas,
+        T.K. Peucker,
+        ,,Algorithms for the Reduction of~the~Number of~Points Required to~Represent a~Digitized Line or its Caricature'',
+        \emph{Cartographica: The International Journal for Geographic Information and~Geovisualization},
+        tom 10,
+        s. 112--122,
+        1973.
+
     \bibitem{keras}
         F. Chollet, Keras Team:
         Keras -- Deep Learning for humans. \\
@@ -92,6 +146,15 @@
         Four Shapes dataset. \\
         Dostępny: \url{https://www.kaggle.com/smeschke/four-shapes}.
         [Dostęp 17~marca 2018]
+
+    \bibitem{suzuki1985}
+        S. Suzuki,
+        K. Abe,
+        ,,Topological structural analysis of~digitized binary images''
+        \emph{Computer Vision, Graphics and~Image Processing},
+        tom 30,
+        s.~32--66,
+        1985.
 
     \bibitem{murty2015}
         M.N. Murty,
