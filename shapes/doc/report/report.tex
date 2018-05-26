@@ -77,9 +77,88 @@ Celem badań jest porównanie wydajności i~skuteczności wybranych metod.
 
 \subsection{Wykorzystane techniki}
 
+Do~zaimplementowania klasyfikatorów użyty został język skryptowy \textbf{Python} w~wersji 3.5.2.
+Ponadto wykorzystane zostały dodatkowe biblioteki, wymienione w~tabeli~\ref{tbl:libraries}.
+Podejście geometryczne opiera~się na~funkcjach udostępnianych przez \textbf{OpenCV}, podczas gdy sieci neuronowe stworzone zostały za~pośrednictwem API dostarczanego przez bibliotekę \textbf{Keras}.
+
+\begin{table}[H]
+    \begin{tabularx}{\textwidth}{|c|l|X|l|c|}
+        \hline
+        \textbf{Nr} & \textbf{Komponent, wersja} & \textbf{Opis} & \textbf{Licencja} & \\
+        \hline
+        \hline
+        1 &
+        Keras, 2.1.4 &
+        Biblioteka udostępniająca API do~sieci neuronowych &
+        MIT License &
+        \cite{keras} \\
+        \hline
+        2 & 
+        Matplotlib, 2.1.0 & 
+        Umożliwia tworzenie wykresów &
+        Matplotlib License &
+        \cite{matplotlib} \\
+        \hline
+        3 & 
+        NumPy, 1.13.3 &
+        Używana do~efektywnych obliczeń na~wektorach $n$-wymiarowych &
+        BSD License &
+        \cite{numpy} \\
+        \hline
+        4 & 
+        OpenCV, 3.3.0 &
+        Biblioteka do~obróbki obrazów &
+        New BSD License &
+        \cite{opencv} \\
+        \hline
+        5 &
+        pandas, 0.21.0 &
+        Wspomaga ładowanie danych z~plików CSV oraz~ich analizę &
+        BSD License &
+        \cite{pandas} \\
+        \hline
+    \end{tabularx}
+    \caption{Wykorzystane biblioteki wraz z~określeniem licencji}
+    \label{tbl:libraries}
+\end{table}
+
+\subsubsection{Wycięcie kształtów z~tła}
+
+Ponieważ projekt zakłada, że kolor kształtów jest zadany z~góry, do~ekstrakcji kształtów z~tła wystarczy zastosować operację progowania obrazu.
+Pozwala ona na~zamianę obrazu w~kolorze na~obraz binarny.
+Progowanie wykonywane jest w~przestrzeni kolorów HSV, która dobrze odwzorowuje podobieństwo odcieni barw; wystarczy zdefiniować przedział dla~parametru H, który określa sąsiedztwo tonalne żądanego koloru.
+
 \subsubsection{Klasyfikator geometryczny}
 
+Główną ideą działania klasyfikatora geometrycznego jest dopasowanie łamanej zamkniętej do~rozpoznanego kształtu i~analiza kształtu tej łamanej.
+
+Do~odróżniania kształtów wykorzystywana jest przede wszystkim liczba wierzchołków w~wyznaczonym konturze.
+Pozwala ona na~proste odróżnienie trójkątów, czworokątów i~dziesięciokątów od~pozostałych kształtów.
+Ponadto, dla~każdego kształtu innego niż trójkąt, stosowane~są odpowiednie heurystyki:
+
+\begin{itemize}
+    \item W~przypadku kwadratów, sprawdzana jest proporcja wysokości do~szerokości kształtu (powinna być bliska jedności).
+    Ponadto bok kwadratu wyznaczany jest na~podstawie pola i~obwodu figury; jeśli dwie wyznaczone wartości nie są bliskie sobie, kształt jest odrzucany.
+    \item Rozpoznawanie gwiazd korzysta z~faktu, że wierzchołki parzyste i~nieparzyste gwiazdy znajdują~się w~innych odległościach od~środka figury.
+    Zatem, jeśli odchylenie standardowe odległości od~środka wierzchołków parzystych i nieparzystych jest zbyt duże, figura jest odrzucana.
+    \item Dla~kół, podobnie jak dla~kwadratów, promień koła wyznaczany jest dwukrotnie na~podstawie pola i~obwodu figury.
+    W~przypadku zbyt dużej różnicy kształt nie jest klasyfikowany.
+\end{itemize}
+
 \subsubsection{Klasyfikatory oparte na~sieciach neuronowych}
+
+Klasyfikatory oparte na~sieciach były trenowane na~podstawie zbioru treningowego \cite{shapes}.
+Zostały opracowane dwa warianty sieci, operujące na~obrazie wejściowym rozmiarów $64 \times 64$:
+
+\begin{itemize}
+    \item W~pierwszym wariancie wejściowy binarny obraz dwuwymiarowy spłaszczany jest do~jednowymiarowego wektora, który przekazywany jest na~wejście sieci.
+    Użyta sieć korzysta z~trzech warstw ukrytych z~funkcją aktywacji ReLU (ang. \emph{Rectified Linear Unit}).
+    Ponadto, po~każdej warstwie ukrytej dodana jest warstwa \emph{dropout}, zapobiegająca zjawisku \emph{overfitting} \cite{srivastava2014}.
+
+    Warstwa wyjściowa jako funkcji aktywacji używa funkcji \emph{softmax}.
+    \item Drugi wariant korzysta z~pojedynczej warstwy konwolucyjnej z~rozmiarem okna $8 \times 8$ oraz warstwy \emph{dropout}.
+    Wynik warstwy konwolucyjnej jest spłaszczany i~dostarczany do~warstwy wyjściowej z~funkcją \emph{softmax}.
+\end{itemize}
 
 \section{Instrukcja użytkowania aplikacji}
 
@@ -146,6 +225,18 @@ Celem badań jest porównanie wydajności i~skuteczności wybranych metod.
         Four Shapes dataset. \\
         Dostępny: \url{https://www.kaggle.com/smeschke/four-shapes}.
         [Dostęp 17~marca 2018]
+
+    \bibitem{srivastava2014}
+        N. Srivastava,
+        G. Hinton,
+        A. Krizhevsky,
+        I. Sutskever,
+        R. Salakhutdinov,
+        ,,Dropout: A Simple Way to Prevent Neural Networks from Overfitting'',
+        \emph{Journal of Machine Learning Research},
+        tom 15,
+        s.~1929--1958,
+        2014.
 
     \bibitem{suzuki1985}
         S. Suzuki,
