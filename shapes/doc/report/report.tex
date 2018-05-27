@@ -88,34 +88,46 @@ Podejście geometryczne opiera~się na~funkcjach udostępnianych przez \textbf{O
         \hline
         \hline
         1 &
+        h5py, 2.7.1 &
+        Interfejs dla binarnego formatu danych HDF5, wymagany przez Keras &
+        BSD License &
+        \cite{h5py} \\
+        \hline
+        2 &
         Keras, 2.1.4 &
         Biblioteka udostępniająca API do~sieci neuronowych &
         MIT License &
         \cite{keras} \\
         \hline
-        2 & 
+        3 & 
         Matplotlib, 2.1.0 & 
         Umożliwia tworzenie wykresów &
         Matplotlib License &
         \cite{matplotlib} \\
         \hline
-        3 & 
+        4 & 
         NumPy, 1.13.3 &
         Używana do~efektywnych obliczeń na~wektorach $n$-wymiarowych &
         BSD License &
         \cite{numpy} \\
         \hline
-        4 & 
+        5 & 
         OpenCV, 3.3.0 &
         Biblioteka do~obróbki obrazów &
         New BSD License &
         \cite{opencv} \\
         \hline
-        5 &
+        6 &
         pandas, 0.21.0 &
         Wspomaga ładowanie danych z~plików CSV oraz~ich analizę &
         BSD License &
         \cite{pandas} \\
+        \hline
+        7 &
+        TensorFlow, 1.8.0 &
+        Framework do~uczenia maszynowego używany przez Keras &
+        Apache 2.0 &
+        \cite{tensorflow} \\
         \hline
     \end{tabularx}
     \caption{Wykorzystane biblioteki wraz z~określeniem licencji}
@@ -178,7 +190,7 @@ Zostały opracowane dwa warianty sieci, operujące na~obrazie wejściowym rozmia
 
 \subsection{Możliwości dalszych badań}
 
-\begin{thebibliography}{9}
+\begin{thebibliography}{99}
 
     \bibitem{bishop1995}
         C.M. Bishop:
@@ -187,6 +199,18 @@ Zostały opracowane dwa warianty sieci, operujące na~obrazie wejściowym rozmia
         Nowy Jork,
         1995.
 
+    \bibitem{keras}
+        F. Chollet, Keras Team:
+        Keras -- Deep Learning for humans. \\
+        Oficjalna strona: \url{https://keras.io}
+        [Dostęp 17~marca 2018]
+
+    \bibitem{h5py}
+        A. Collette,
+        HDF5 for Python. \\
+        Oficjalna strona: \url{https://www.h5py.org/}
+        [Dostęp 27~maja 2018]
+        
     \bibitem{douglas1973}
         D.H. Douglas,
         T.K. Peucker,
@@ -195,12 +219,6 @@ Zostały opracowane dwa warianty sieci, operujące na~obrazie wejściowym rozmia
         tom 10,
         s. 112--122,
         1973.
-
-    \bibitem{keras}
-        F. Chollet, Keras Team:
-        Keras -- Deep Learning for humans. \\
-        Oficjalna strona: \url{https://keras.io}
-        [Dostęp 17~marca 2018]
 
     \bibitem{opencv}
         Intel Corporation, Willow Garage, Itseez:
@@ -226,6 +244,20 @@ Zostały opracowane dwa warianty sieci, operujące na~obrazie wejściowym rozmia
         Dostępny: \url{https://www.kaggle.com/smeschke/four-shapes}.
         [Dostęp 17~marca 2018]
 
+    \bibitem{murty2015}
+        M.N. Murty,
+        V.S. Devi:
+        \emph{Introduction to~Pattern Recognition and~Machine Learning}.
+        World Scientific Publishing:
+        Singapur,
+        2015.
+
+    \bibitem{numpy}
+        T. Oliphant:
+        NumPy. \\
+        Oficjalna strona: \url{http://www.numpy.org}.
+        [Dostęp 17~marca 2018]
+        
     \bibitem{srivastava2014}
         N. Srivastava,
         G. Hinton,
@@ -247,19 +279,11 @@ Zostały opracowane dwa warianty sieci, operujące na~obrazie wejściowym rozmia
         s.~32--66,
         1985.
 
-    \bibitem{murty2015}
-        M.N. Murty,
-        V.S. Devi:
-        \emph{Introduction to~Pattern Recognition and~Machine Learning}.
-        World Scientific Publishing:
-        Singapur,
-        2015.
-
-    \bibitem{numpy}
-        T. Oliphant:
-        NumPy. \\
-        Oficjalna strona: \url{http://www.numpy.org}.
-        [Dostęp 17~marca 2018]
+    \bibitem{tensorflow}
+        TensorFlow Team:
+        TensorFlow -- An open source machine learning framework for everyone. \\
+        Oficjalna strona: \url{https://www.tensorflow.org/}
+        [Dostęp 27~maja 2018]
 
 \end{thebibliography}
 
