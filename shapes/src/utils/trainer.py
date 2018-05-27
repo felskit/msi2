@@ -10,6 +10,10 @@ class NetworkTrainer:
     Neural network trainer.
     """
 
+    train_images, test_images = [], []
+    train_labels, test_labels = [], []
+    classes = 0
+
     def __init__(self, image_size):
         """
         Trainer constructor.
@@ -18,9 +22,6 @@ class NetworkTrainer:
         :type image_size: int
         """
         self.image_shape = (image_size, image_size)
-        self.train_images, self.test_images = [], []
-        self.train_labels, self.test_labels = [], []
-        self.classes = 0
 
     @staticmethod
     def _normalize(images):

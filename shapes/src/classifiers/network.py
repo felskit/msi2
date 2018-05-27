@@ -9,6 +9,8 @@ class NetworkClassifier:
     Neural network classifier.
     """
 
+    prediction_threshold = 0.95
+
     def __init__(self, model_dir, flatten):
         """
         Classifier constructor.
@@ -21,7 +23,6 @@ class NetworkClassifier:
         """
         self.model = load_model(model_dir)
         self.flatten = flatten
-        self.prediction_threshold = 0.95
 
     def classify(self, region, verbose=False):
         """

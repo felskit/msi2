@@ -9,11 +9,12 @@ class ShapeExtractor:
     Module used to extract regions of image that contain potential shapes.
     """
 
+    bounding_box_margin = config["bounding_box_margin"]
+    shape_margin = config["shape_margin"]
+
     def __init__(self, lower, upper, image_size):
         self.lower = lower
         self.upper = upper
-        self.bounding_box_margin = config["bounding_box_margin"]
-        self.shape_margin = config["shape_margin"]
         self.output_shape = (image_size, image_size)
 
     def get_regions(self, image, fill_mode, contour_processing_mode=ContourProcessingMode.NONE):

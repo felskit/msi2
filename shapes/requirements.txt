@@ -5,4 +5,4 @@ opencv-python==3.3.0.10
 pandas==0.21.0
 keras==2.1.4
 tensorflow==1.8.0
-h5py=2.7.1
+h5py==2.7.1

@@ -6,9 +6,9 @@ class CaptureWindow:
     Wrapper class for the OpenCV :class:`cv2.VideoCapture` class.
     Performs input handling and shows captured data on the screen.
     """
-
-    highlight_color = (0, 255, 0)
-    """The highlight color used to draw boxes and text."""
+    running = True
+    frame = None
+    font = cv2.FONT_HERSHEY_DUPLEX
 
     def __init__(self, device_id):
         """
@@ -19,15 +19,6 @@ class CaptureWindow:
         """
         # noinspection PyArgumentList
         self.capture = cv2.VideoCapture(device_id)
-        self.running = True
-        self.frame = None
-        # insert your key bindings here
-        # the function should be effectively a void callable (no arguments)
-        # because if we store the delegates like this they all need to have the same signature
-        # you can kinda cheat here by wrapping a function with arguments into a parameterless lambda
-        self.key_bindings = {
-            'q': self.stop_capture
-        }
 
     def next_frame(self):
         """
@@ -55,17 +46,6 @@ class CaptureWindow:
         if self.frame is not None:
             cv2.imshow('Shapes', self.frame)
 
-    def process_keys(self):
-        """
-        Checks all keys associated with input action.
-        If one of the keys was pressed, the associated action is performed.
-
-        :return: None
-        """
-        for key, func in self.key_bindings.items():
-            if self._is_key_pressed(key):
-                func()
-
     def stop_capture(self):
         """
         Stops the capture and releases all resources associated with the capture window.
@@ -76,41 +56,72 @@ class CaptureWindow:
         self.capture.release()
         cv2.destroyAllWindows()
 
-    def draw_recognized_region(self, region, result):
+    def draw_recognized_region(self, region, result, color):
         """
         Draws a recognized shape region on the most recent frame.
 
+        :param color: Color used to draw shape bounding box.
+        :type color: tuple
         :param region: The shape region which has been recognized.
         :type region: src.data.types.Region
         :param result: The result classification returned by the classifier used.
         :type result: src.data.types.ShapeType
         :return: None
         """
-        cv2.rectangle(
-            self.frame,
-            (region.x1, region.y1),
-            (region.x2, region.y2),
-            color=self.highlight_color,
-            thickness=3
-        )
-        cv2.putText(
-            self.frame,
-            result.name,
-            (region.x1 + 10, region.y2 - 10),
-            cv2.FONT_HERSHEY_DUPLEX,
-            1.5,
-            self.highlight_color,
-            2
-        )
+        cv2.rectangle(self.frame, (region.x1, region.y1), (region.x2, region.y2), color=color, thickness=3)
+        cv2.putText(self.frame, result.name, (region.x1 + 10, region.y2 - 10), self.font, 1.5, color, 2)
 
-    @staticmethod
-    def _is_key_pressed(key):
+    def draw_timer(self, index, timer, color):
         """
-        Determines whether a character key has been pressed.
+        Draws the timer value on the screen.
 
-        :param key: The character key to be checked.
-        :type key: char
-        :return: True, if the character key is pressed; false otherwise.
-        :rtype: bool
+        :param index: Index of the timer's classifier.
+        :type index: int
+        :param timer: Timer value string.
+        :type timer: str
+        :param color: Color of the timer.
+        :type color: tuple
+        :return: None
         """
-        return cv2.waitKey(1) & 0xff == ord(key)
+        cv2.putText(self.frame, timer, (10, self.frame.shape[0] - 10 - index * 34), self.font, 1, color, 2)
+
+    def draw_help(self, color1, color2, color3):
+        """
+        Draws help with keybindings on the screen.
+
+        :param color1: Color of the first classifier.
+        :type color1: tuple
+        :param color2: Color of the second classifier.
+        :type color2: tuple
+        :param color3: Color of the third classifier.
+        :type color3: tuple
+        :return: None
+        """
+        x1, x2 = 10, 240
+        scale = 0.75
+        color = (255, 255, 255)
+        cv2.putText(self.frame, "Zmiana klasyfikatora:", (x1, 28), self.font, scale, color, 2)
+        cv2.putText(self.frame, "1 - Klasyfikator geometryczny", (x1, 28 * 2), self.font, scale, color1, 2)
+        cv2.putText(self.frame, "2 - Siec neuronowa (wektorowa)", (x1, 28 * 3), self.font, scale, color2, 2)
+        cv2.putText(self.frame, "3 - Siec neuronowa (konwolucyjna)", (x1, 28 * 4), self.font, scale, color3, 2)
+        cv2.putText(self.frame, "Wybor ksztaltu:", (x1, 28 * 6), self.font, scale, color, 2)
+        cv2.putText(self.frame, "Z - Kwadrat", (x1, 28 * 7), self.font, scale, color, 2)
+        cv2.putText(self.frame, "X - Gwiazda", (x1, 28 * 8), self.font, scale, color, 2)
+        cv2.putText(self.frame, "C - Kolo", (x1, 28 * 9), self.font, scale, color, 2)
+        cv2.putText(self.frame, "V - Trojkat", (x1, 28 * 10), self.font, scale, color, 2)
+        cv2.putText(self.frame, "Proba czasowa:", (x2, 28 * 6), self.font, scale, color, 2)
+        cv2.putText(self.frame, "A - Start", (x2, 28 * 7), self.font, scale, color, 2)
+        cv2.putText(self.frame, "S - Stop", (x2, 28 * 8), self.font, scale, color, 2)
+        cv2.putText(self.frame, "R - Restart", (x2, 28 * 9), self.font, scale, color, 2)
+        cv2.putText(self.frame, "D - Debug", (x2, 28 * 12), self.font, scale, color, 2)
+        cv2.putText(self.frame, "Q - Wyjscie", (x2, 28 * 13), self.font, scale, color, 2)
+
+    def draw_shape(self, shape):
+        """
+        Draws the shape name on the screen.
+
+        :param shape: Expected shape.
+        :type shape: src.data.types.ShapeType
+        :return: None
+        """
+        cv2.putText(self.frame, shape.name, (10, self.frame.shape[0] - (34 * 3 + 10)), self.font, 1, (255, 255, 255), 2)
