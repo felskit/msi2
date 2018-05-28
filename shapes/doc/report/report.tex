@@ -10,6 +10,7 @@
 \usepackage{graphicx}
 \usepackage[hidelinks]{hyperref}
 \usepackage[polish]{babel}
+\usepackage{menukeys}
 
 \def\arraystretch{1.5}
 \renewcommand{\thesection}{\arabic{section}.}
@@ -172,13 +173,91 @@ Zostały opracowane dwa warianty sieci, operujące na~obrazie wejściowym rozmia
     Wynik warstwy konwolucyjnej jest spłaszczany i~dostarczany do~warstwy wyjściowej z~funkcją \emph{softmax}.
 \end{itemize}
 
-\section{Instrukcja użytkowania aplikacji}
+\section{Instrukcja użytkowania}
+
+W~skład projektu wchodzą trzy główne skrypty Pythona, odpowiadające kolejno za~trenowanie klasyfikatorów opartych na~sieciach neuronowych i~testowanie działania wszystkich trzech klasyfikatorów na~obrazach statycznych oraz strumieniach wideo z~kamery komputera. 
 
 \subsection{Trenowanie sieci neuronowej}
 
+Do~wykonania treningu sieci neuronowej należy wykorzystać skrypt \verb+train.py+.
+Dokonuje on wyznaczenia modelu dla~sieci w~obu wariantach (spłaszczonym i~konwolucyjnym).
+Skrypt należy wywołać poleceniem
+\begin{verbatim}
+$ python train.py -d train-image-directory
+\end{verbatim}
+gdzie \verb+train-image-directory+ oznacza katalog zawierający zbiór treningowy udostępniony w~\cite{shapes}.
+Obrazy w~zbiorze treningowym muszą zawierać czarne kształty na~białym tle.
+
+Wykonanie skryptu rozpocznie proces uczenia sieci, który może potrwać do~kilkunastu minut.
+W~wyniku działania skryptu w~bieżącym katalogu zostanie stworzony podkatalog \verb+model+, zawierający dwa pliki:
+
+\begin{itemize}
+    \item Plik \verb+shapes_model_1d_vec.h5+ zawiera model dla~sieci neuronowej operującej na~spłaszczonym obrazie.
+    \item Plik \verb+shapes_model_2d_img.h5+ zawiera model dla~konwolucyjnej sieci neuronowej.
+\end{itemize}
+
 \subsection{Testy na~obrazach wczytywanych z~pliku}
 
+Klasyfikacji dla~folderu zawierającego obrazy można wykonać za~pomocą skryptu \verb+image_test.py+.
+Skrypt ten wczyta wszystkie obrazy (z białymi kształtami na~czarnym tle) znajdujące~się w~danym folderze i~dokona ich zbiorczej identyfikacji.
+Do~uruchomienia go należy użyć polecenia
+\begin{verbatim}
+$ python image_test.py -d test-image-directory
+                       -c {geometric,vector-network,convolutional-network}
+\end{verbatim}
+
+\begin{itemize}
+    \item W~parametrze \verb+-d+ podajemy ścieżkę do~folderu, w~którym znajdują~się obrazy testowe.
+    \item Parametr \verb+-c+ służy wyborowi klasyfikatora, który powinien być użyty dla~danych testowych.
+    Możliwe opcje to:
+    \begin{itemize}
+        \item \verb+geometric+ --- używa klasyfikatora geometrycznego,
+        \item \verb+vector-network+ --- używa klasyfikatora opartego o~płaską sieć neuronową,
+        \item \verb+convolutional-network+ --- używa klasyfikatora opartego o~sieć konwolucyjną.
+    \end{itemize}
+\end{itemize}
+
+Na~wyjściu program wypisze liczbę rozpoznanych kształtów każdego rodzaju na~wszystkich obrazach znajdujących~się w~wyspecyfikowanym katalogu.
+
 \subsection{Rozpoznawanie kształtów w~czasie rzeczywistym}
+
+Ostatni skrypt, \verb+capture.py+, służy demonstracji działania klasyfikatorów na~strumieniu wideo.
+Obraz pobierany jest z~kamerki komputera, jeśli taką posiada.
+Skrypt uruchamiamy bez parametrów poleceniem:
+\begin{verbatim}
+$ python capture.py
+\end{verbatim}
+Skrypt ma~charakter interaktywnego okna --- za~pomocą klawiszy klawiatury można przełączać~się między klasyfikatorami lub dokonać próby czasowej.
+Dokładny opis wszystkich opcji znajduje~się poniżej.
+
+\begin{itemize}
+    \item Klawisze numeryczne służą przełączaniu~się między klasyfikatorami, których wyniki wyświetlane~są na~podglądzie.
+    \begin{itemize}
+        \item Klawisz \keys{1} powoduje przełączenie podglądu na~klasyfikator geometryczny.
+        \item Klawisz \keys{2} powoduje przełączenie podglądu na~wektorowy klasyfikator z~siecią neuronową.
+        \item Klawisz \keys{3} powoduje przełączenie podglądu na~klasyfikator z~konwolucyjną siecią neuronową.
+    \end{itemize}
+    \item Za~pomocą skryptu można wykonać próbę czasową wszystkich klasyfikatorów dla~ustalonego rodzaju kształtu.
+    Dla~każdego klasyfikatora liczony jest czas poprawnej klasyfikacji.
+    Czas zatrzymywany jest, jeśli klasyfikator przez dłużej niż~24~klatki (1~sekundę) nie~rozpoznaje kształtu lub~rozpoznaje go~błędnie.
+    \begin{itemize}
+        \item Klawisze \keys{Z}, \keys{X}, \keys{C}, \keys{V} ustawiają docelowy rodzaj kształtu.
+        \begin{itemize}
+            \item Wciśnięcie klawisza \keys{Z} oznacza, że rozpoznawane będą kwadraty.
+            \item Wciśnięcie klawisza \keys{X} oznacza, że rozpoznawane będą gwiazdy.
+            \item Wciśnięcie klawisza \keys{C} oznacza, że rozpoznawane będą koła.
+            \item Wciśnięcie klawisza \keys{V} oznacza, że rozpoznawane będą trójkąty.
+        \end{itemize}
+        \item Klawisz \keys{A} powoduje rozpoczęcie liczenia czasu.
+        \item Klawisz \keys{S} powoduje zatrzymanie rozpoczętej próby.
+        \item Klawisz \keys{R} powoduje zrestartowanie próby.
+    \end{itemize}
+    Podczas trwania próby można zarówno zmieniać docelowy typ rozpoznawanego kształtu, jak i~przełączać podgląd wyników klasyfikatora między dostępnymi opcjami.
+    \item Klawisz \keys{H} powoduje wyświetlenie pomocy na~ekranie.
+    \item Klawisz \keys{D} powoduje włączenie trybu \emph{debug}.
+    W~tym trybie w~osobnych oknach na~ekranie wyświetlane~są rozpoznawane po~progowaniu kontury, a na~konsoli wyświetlane są: średni, minimalny i maksymalny czas działania poszczególnych klasyfikatorów.
+    \item Klawisz \keys{Q} powoduje zakończenie działania skryptu.
+\end{itemize}
 
 \section{Wyniki eksperymentalne}
 
