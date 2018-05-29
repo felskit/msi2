@@ -66,7 +66,7 @@ class GeometricClassifier:
         side_from_perimeter = perimeter / 4
         side_from_area = np.sqrt(area)
         if np.abs(side_from_perimeter - side_from_area) <= self.dimension_tolerance and \
-            self.aspect_lower <= aspect_ratio <= self.aspect_upper:
+                self.aspect_lower <= aspect_ratio <= self.aspect_upper:
             return ShapeType.SQUARE
         else:
             return None
@@ -101,11 +101,14 @@ class GeometricClassifier:
         :param perimeter: The perimeter of the contour.
         :return: Determined shape type.
         """
+        (_, _, width, height) = cv2.boundingRect(contour)
+        aspect_ratio = width / height
         moments = cv2.moments(contour)
         radius_from_perimeter = perimeter / (2 * np.pi)
         area = moments['m00']
         radius_from_area = np.sqrt(area / np.pi)
-        if np.abs(radius_from_area - radius_from_perimeter) <= self.dimension_tolerance:
+        if np.abs(radius_from_area - radius_from_perimeter) <= self.dimension_tolerance and \
+                self.aspect_lower <= aspect_ratio <= self.aspect_upper:
             return ShapeType.CIRCLE
         else:
             return None
