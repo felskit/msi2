@@ -438,9 +438,24 @@ W~teście empirycznym najlepiej zaprezentowała~się sieć konwolucyjna, ze~wzgl
 
 \section{Podsumowanie}
 
-TODO sranie do ryja wszystko szybkie jak siemano i real time ez pz
+Przeprowadzone eksperymenty pokazują, że~wszystkie zastosowane podejścia dość dobrze radzą sobie z~problemem rozpoznawania prostych kształtów.
+Zauważalne są jednak między nimi różnice w~dziedzinie wydajności i~efektywności.
+
+Klasyfikator oparty na~konturach wykazuje w~eksperymentach najkrótszy czas działania, lecz często działa dość niestabilnie, co~wykazała próba czasowa.
+Z~kolei sieci neuronowe mimo konieczności treningu na~wcześniej przygotowanym zbiorze oraz dłuższego czasu klasyfikacji, nadal mogą być używane do~rozpoznawania w~czasie rzeczywistym, i~działają mniej chaotycznie, niż podejście typowo geometryczne.
 
 \subsection{Możliwości dalszych badań}
+
+Istnieje kilka potencjalnych zagadnień, stanowiących naturalną kontynuację opracowanego projektu:
+
+\begin{itemize}
+    \item Naturalnym rozszerzeniem istniejącego rozwiązania byłoby dodanie większej liczby rodzajów rozpoznawanych kształtów.
+    Koszt takiego rozszerzenia różniłby~się znacząco pomiędzy klasyfikatorami --- podczas gdy rozszerzenie klasyfikatora geometrycznego byłoby stosunkowo bezproblemowe, dla~pozostałych dwóch należałoby przygotować zbiór treningowy oraz~ponownie wytrenować model sieci.
+    \item Interesującym aspektem analizy stworzonych rozwiązań byłaby również ocena ich podatności na~błędy pierwszego rodzaju (ang. \emph{false positive}).
+    Znane są rozwiązania używające np.~sieci adwersaryjnych (ang. \emph{adversarial network}) w~celu wygenerowania obrazów powodujących błędne działanie klasyfikatorów opartych na~sieciach neuronowych.
+    \item Pewną wadą modeli dopasowanych w~ramach projektów jest nieuwzględnienie w~zbiorze treningowych obiektów niepasujących do~żadnej z~kategorii kształtów.
+    Wobec tego pomysłem wartym rozważenia byłoby dodanie dodatkowej zbiorczej klasy na~wszystkie pozostałe kształty niepasujące do~ustalonych archetypów.
+\end{itemize}
 
 \begin{thebibliography}{99}
 
