@@ -265,19 +265,20 @@ Dokładny opis wszystkich opcji znajduje~się poniżej.
 
 \section{Wyniki eksperymentalne}
 
-TODO sranie do ryja
+W~celu oceny zaimplementowanych klasyfikatorów wykonane zostało kilka eksperymentów, których celem było zbadanie ich efektywności i~wydajności.
+Niniejszy rozdział zawiera opis wykonanych testów oraz~przedstawia uzyskane wyniki.
 
 \subsection{Kryteria oceny klasyfikatorów}
 
-Ocenie zdecydowano się poddać kilka kryteriów. Wyniki klasyfikacji postanowiono zbadać poprzez wyznaczenie dokładności \emph{(ang. accuracy)}, która jest jedną z miar oceny jakości klasyfikacji. Wydajność klasyfikatorów zweryfikowano mierząc czas wywołań klasyfikacji dla każdego z~nich. Ponadto klasyfikatory poddano próbie bardziej empirycznej, polegającej na teście w czasie rzeczywistym. 
+Ocenie zdecydowano się poddać kilka kryteriów. Wyniki klasyfikacji postanowiono zbadać poprzez wyznaczenie dokładności \emph{(ang. accuracy)}, która jest jedną z miar oceny jakości klasyfikacji. Wydajność klasyfikatorów zweryfikowano mierząc czas wywołań klasyfikacji dla każdego z~nich. Ponadto klasyfikatory poddano próbie o~charakterze empirycznym, polegającej na~teście w~czasie rzeczywistym. 
 
 \subsubsection{Dokładność}
 
-Dokładność jest najbardziej intuicyjnym pojęciem pozwalającym na zmierzenie rozumianej przez nas skuteczności klasyfikatora. Dokładność jest bowiem stosunkiem liczby poprawnych klasyfikacji do liczności całej badanej populacji.
+Dokładność jest najbardziej intuicyjnym pojęciem pozwalającym na zmierzenie szeroko rozumianej skuteczności klasyfikatora. Dokładność jest bowiem stosunkiem liczby poprawnych klasyfikacji do~liczby rozpoznawanych kształtów.
 
 Dla każdego obrazu ze zbioru \cite{shapes} uruchomiono klasyfikację kształtu przy pomocy klasyfikatora geometrycznego i każdej z sieci neuronowych. Następnie zgodnie z definicją dokładności zliczono poprawne wyniki i wyznaczono szukany współczynnik.
 
-W przypadku rozpatrywanych sieci neuronowych dokładność jest dodatkowo jedną z miar wypisywanych na ekran w trybie \emph{verbose} podczas treningu. Podczas trenowania zbiór danych wejściowych dzielony jest na dwa zbiory -- co piąty element odkładany jest na bok do zbioru testowego. Zbiór treningowy zawiera wobec tego 80\% obrazów, a po każdej epoce następuje walidacja obecnego stanu sieci przy pomocy pozostałych 20\% obrazów. Na samym końcu treningu wykonywana jest ewaluacja wytrenowanego modelu, w celu ustalenia ostatecznej dokładności klasyfikacji na zbiorze testowym.
+W przypadku rozpatrywanych sieci neuronowych dokładność jest dodatkowo jedną z miar wypisywanych na ekran w trybie \emph{verbose} podczas treningu. Podczas trenowania zbiór danych wejściowych dzielony jest na dwa zbiory --- co piąty element odkładany jest na bok do zbioru testowego. Zbiór treningowy zawiera wobec tego 80\% obrazów, a po każdej epoce następuje walidacja obecnego stanu sieci przy pomocy pozostałych 20\% obrazów. Na samym końcu treningu wykonywana jest ewaluacja wytrenowanego modelu, w celu ustalenia ostatecznej dokładności klasyfikacji na zbiorze testowym.
 
 \subsubsection{Wydajność}
 
@@ -287,11 +288,11 @@ Stworzony na potrzeby projektu skrypt \verb+capture.py+ pozwala na włączenie t
     \item maksymalny czas klasyfikacji od początku działania skryptu,
     \item średni czas klasyfikacji od początku działania skryptu.
 \end{itemize}
-Zdecydowano się nie liczyć mediany, ponieważ wymagałoby to pamiętania wszystkich czasów klasyfikacji, co negatywnie wpłynęło by na zużycie pamięci.
+Zdecydowano się nie liczyć mediany, ponieważ wymagałoby to zapamiętania wszystkich czasów klasyfikacji, co~wpłynęłoby negatywnie na~zużycie pamięci.
 
 \subsubsection{Próba czasowa}
 
-W tym teście zbadano zachowanie wszystkich trzech jednocześnie w tym samym scenariuszu -- rozpoznawaniu kształtów w czasie rzeczywistym na strumieniu wideo. Wykorzystano w tym celu opisywany wcześniej skrypt \verb+capture.py+, który skonfigurowano na rozpoznawanie konkretnego kształtu i uruchomiono próbę czasową. Zadaniem jest poprawna klasyfikacja pokazywanego kształtu przez jak najdłuższy okres czasu, przy czym dopuszcza się pomyłkę nie dłużej niż 8 klatek z rzędu. W przeciwnym przypadku czas przestaje być mierzony dla danego klasyfikatora.
+W~tym teście zbadano zachowanie wszystkich trzech klasyfikatorów jednocześnie w~tym samym scenariuszu, obejmującym rozpoznawanie kształtów w~czasie rzeczywistym na~strumieniu wideo. Wykorzystano w~tym celu opisywany wcześniej skrypt \verb+capture.py+, przy pomocy którego ustawiono na~rozpoznawanie konkretnego kształtu i~uruchomiono próbę czasową. Zadaniem jest poprawna klasyfikacja pokazywanego kształtu przez jak najdłuższy okres czasu, przy czym dopuszcza~się pomyłkę przez nie~dłużej niż 8~klatek z~rzędu. Zwrócenie błędnego wyniku przez dłużej niż~ustalony limit powoduje zakończenie pomiaru czasu dla~danego klasyfikatora.
 
 \subsection{Uzyskane wyniki}
 
@@ -299,20 +300,21 @@ W poniższym podrozdziale opisano wyniki uzyskane przy pomocy opisanych powyżej
 
 \subsubsection{Dokładność}
 
-W zbiorze \cite{shapes} znajduje się 14970 obrazów -- 3720 kół, 3765 kwadratów, 3765 gwiazd i 3720 trójkątów. Dla każdego z klasyfikatorów wyznaczono dokładność uruchamiając proces klasyfikacji na każdym z obrazów przy pomocy skryptu \verb+image_test.py+ i zliczając stosunek poprawnych dopasowań do liczby wszystkich prób. Wyniki wyglądają następująco:
+W zbiorze \cite{shapes} znajduje się 14970 obrazów --- 3720 kół, 3765 kwadratów, 3765 gwiazd i 3720 trójkątów. Dla każdego z klasyfikatorów wyznaczono dokładność uruchamiając proces klasyfikacji na każdym z obrazów przy pomocy skryptu \verb+image_test.py+ i zliczając stosunek poprawnych dopasowań do liczby wszystkich prób. Wyniki wyglądają następująco:
 \begin{itemize}
-    \item Klasyfikator geometryczny zakwalifikował poprawnie 14911 kształtów, co daje dokładność na poziomie 0.9961 w przybliżeniu. Tym razem najgorzej wypadły trójkąty -- były tam aż~153 pomyłki.
-    \item Klasyfikator korzystający z sieci neuronowej klasyfikującej wektory zidentyfikował poprawnie 14813 kształtów, co daje dokładność na poziomie 0.9895 w przybliżeniu. Najwięcej -- bo aż 46 -- błędów zostało popełnionych w przypadku klasyfikacji gwiazd.
-    \item Klasyfikator korzystający z konwolucyjnej sieci neuronowej rozpoznał poprawnie 14915 kształtów, co daje dokładność na poziomie 0.9963 w przybliżeniu. Podobnie jak poprzednio, najgorzej wypadły trójkąty, jednak tym razem pomyłek było mniej, bo zaledwie 53.
+    \item Klasyfikator geometryczny zakwalifikował poprawnie 14911 kształtów, co daje dokładność na poziomie 0.9961 w przybliżeniu.
+    W~tym przypadku najgorzej wypadły trójkąty --- były tam aż~153 pomyłki.
+    \item Klasyfikator korzystający z sieci neuronowej klasyfikującej wektory zidentyfikował poprawnie 14813 kształtów, co daje dokładność na~poziomie 0.9895. Najwięcej błędów zostało popełnionych w~przypadku klasyfikacji gwiazd (46).
+    \item Klasyfikator korzystający z konwolucyjnej sieci neuronowej rozpoznał poprawnie 14915 kształtów, co daje dokładność na poziomie 0.9963 w przybliżeniu. Podobnie jak w~przypadku klasyfikatora geometrycznego, najgorzej wypadła klasyfikacja trójkątów (53 pomyłki).
 \end{itemize}
 
-Warto zauważyć, że poza siedmioma przypadkami błędnej identyfikacji trójkątów jako kwadraty i~gwiazdy przez sieć konwolucyjną, nie wystąpiły żadne błędy pierwszego typu \emph{(ang. false positive errors)}. Wszystkie pozostałe błędy dotyczyły nierozpoznania kształtu całkowicie.
+Warto zauważyć, że poza siedmioma przypadkami błędnej identyfikacji trójkątów jako kwadraty i~gwiazdy przez sieć konwolucyjną, nie wystąpiły żadne błędy pierwszego typu (ang. \emph{false positive errors}). Wszystkie popełnione błędy dotyczyły nierozpoznania znanego kształtu.
 
-Jak już wcześniej zostało wspomniane, dokładność była także wypisywana na ekran w trakcie treningu sieci neuronowych. Wartość wyznaczona podczas ewaluacji wytrenowanego modelu w~przypadku sieci klasyfikującej wektory to 0.9980, natomiast dla sieci konwolucyjnej zwrócona wartość była 1.0 (wyniosła tyle już po 17-tej z 25 epok).
+Jak już wspomniano wcześniej, dokładność była także wypisywana na ekran w trakcie treningu sieci neuronowych. Wartość wyznaczona podczas ewaluacji wytrenowanego modelu w~przypadku sieci klasyfikującej wektory to 0.9980, natomiast dla sieci konwolucyjnej zwrócona wartość była 1.0 (wyniosła tyle już po siedemnastej z 25 epok).
 
 \subsubsection{Wydajność}
 
-Wydajność każdej z metod klasyfikacji zmierzono na dwa sposoby. Pierwszym źródłem wyników był wykorzystany do badania dokładności skrypt \verb+image_test.py+, w którym zmierzono upływ czasu klasyfikacji wszystkich 14970 obrazów łącznie z ich obróbką przez ekstrator. Otrzymane wyniki są następujące:
+Wydajność każdej z metod klasyfikacji zmierzono na dwa sposoby. Pierwszym źródłem wyników był wykorzystany do badania dokładności skrypt \verb+image_test.py+, w którym zmierzono upływ czasu klasyfikacji wszystkich 14970 obrazów łącznie z ich obróbką przez ekstraktor (komponent programu znajdujący figury na~obrazie). Otrzymane wyniki są następujące:
 \begin{itemize}
     \item Klasyfikator geometryczny skończył klasyfikację obrazów w 28.66s, co daje w przybliżeniu średnio 0.0019s na obróbkę i klasyfikację każdego kształtu.
     \item Klasyfikator korzystający z sieci neuronowej klasyfikującej wektory skończył klasyfikację obrazów w 43.67s, co daje w przybliżeniu średnio 0.0029s na obróbkę i klasyfikację każdego kształtu.
@@ -345,70 +347,94 @@ Drugim źródłem wyników był działający w trybie \emph{debug} skrypt \verb+
 
 Testom poddano każdy z kształtów osobno przy dodatkowym zastosowaniu różnych utrudnień, którymi są:
 \begin{itemize}
-    \item translacja kształtu,
+    \item translacja (przesuwanie) kształtu wzdłuż~płaszczyzny kamery,
     \item obrót kształtu,
-    \item przechylenie kształtu,
-    \item przybliżenie kształtu.
+    \item przechylenie kształtu względem~płaszczyzny kamery,
+    \item przybliżanie i~oddalanie kształtu.
 \end{itemize}
 
-Wyniki wykonanych prób czasowych znajdują się w tabeli poniżej. Kolumny oznaczone jako \emph{geometric}, \emph{network (vec)} oraz \emph{network (conv)} odpowiadają odpowiednio klasyfikatorom: geometrycznemu, opartego na sieci neuronowej klasyfikującej wektory oraz na sieci konwolucyjnej.
+Wyniki wykonanych prób czasowych znajdują się w tabeli~\ref{tab:time-trials}. Kolumny oznaczone jako \emph{geometric}, \emph{network (vec)} oraz \emph{network (conv)} odpowiadają odpowiednio klasyfikatorom: geometrycznemu, opartemu na sieci neuronowej klasyfikującej wektory oraz sieci konwolucyjnej.
 
 \begin{table}[H]
-    \begin{tabularx}{\textwidth}{|c|c|Y|Y|Y|}
+    \begin{tabularx}{\textwidth}{|c|c|Yr|Yr|Yr|}
         \hline
-        \textbf{Test} & \textbf{Kształt} & \textbf{geometric} & \textbf{network (vec)} & \textbf{network (conv)} \\
+        \textbf{Test} & \textbf{Kształt} & \multicolumn{2}{c|}{\textbf{geometric}} & \multicolumn{2}{c|}{\textbf{network (vec)}} & \multicolumn{2}{c|}{\textbf{network (conv)}} \\
         \hline
         \hline
         \multirow{4}{*}{\rotatebox[origin=c]{90}{\textbf{Translacja}}}
-        & kwadrat & 00:14.368 & 00:14.368 & 00:14.368 \\
-        \cline{2-5}
-        & koło & 00:16.493 & 00:16.493 & 00:16.493 \\
-        \cline{2-5}
-        & trójkąt & 00:13.210 & 00:13.210 & 00:13.210 \\
-        \cline{2-5}
-        & gwiazda & 00:14.480 & 00:14.480 & 00:14.480 \\
+        & kwadrat & 00:14.368 & \footnotesize{(0.960)} & 00:14.968 & \footnotesize{(1.000)} & 00:14.968 & \footnotesize{(1.000)} \\
+        \cline{2-8}
+        & koło & 00:16.493 & \footnotesize{(1.000)} & 00:16.493 & \footnotesize{(1.000)} & 00:16.493 & \footnotesize{(1.000)} \\
+        \cline{2-8}
+        & trójkąt & 00:13.210 & \footnotesize{(1.000)} & 00:13.210 & \footnotesize{(1.000)} & 00:13.210 & \footnotesize{(1.000)} \\
+        \cline{2-8}
+        & gwiazda & 00:14.480 & \footnotesize{(1.000)} & 00:14.480 & \footnotesize{(1.000)} & 00:14.480 & \footnotesize{(1.000)} \\
         \hline
         \hline
         \multirow{4}{*}{\rotatebox[origin=c]{90}{\textbf{Obrót}}}
-        & kwadrat & 00:17.291 & 00:17.291 & 00:17.291 \\
-        \cline{2-5}
-        & koło & 00:17.936 & 00:17.936 & 00:17.936 \\
-        \cline{2-5}
-        & trójkąt & 00:18.347 & 00:18.347 & 00:18.347 \\
-        \cline{2-5}
-        & gwiazda & 00:10.154 & 00:10.231 & 00:15.575 \\
+        & kwadrat & 00:17.291 & \footnotesize{(1.000)} & 00:17.291 & \footnotesize{(1.000)} & 00:17.291 & \footnotesize{(1.000)} \\
+        \cline{2-8}
+        & koło & 00:17.936 & \footnotesize{(1.000)} & 00:17.936 & \footnotesize{(1.000)} & 00:17.936 & \footnotesize{(1.000)} \\
+        \cline{2-8}
+        & trójkąt & 00:18.347 & \footnotesize{(1.000)} & 00:18.347 & \footnotesize{(1.000)} & 00:18.347 & \footnotesize{(1.000)} \\
+        \cline{2-8}
+        & gwiazda & 00:10.154 & \footnotesize{(0.652)} & 00:10.231 & \footnotesize{(0.657)} & 00:15.575 & \footnotesize{(1.000)} \\
         \hline
     \end{tabularx}
-\end{table}
-\begin{table}[H]
-    \begin{tabularx}{\textwidth}{|c|c|Y|Y|Y|}
+
+    \vspace{2em}
+
+    \begin{tabularx}{\textwidth}{|c|c|Yr|Yr|Yr|}
         \hline
-        \textbf{Test} & \textbf{Kształt} & \textbf{geometric} & \textbf{network (vec)} & \textbf{network (conv)} \\
+        \textbf{Test} & \textbf{Kształt} & \multicolumn{2}{c|}{\textbf{geometric}} & \multicolumn{2}{c|}{\textbf{network (vec)}} & \multicolumn{2}{c|}{\textbf{network (conv)}} \\
         \hline
         \hline
         \multirow{4}{*}{\rotatebox[origin=c]{90}{\textbf{Przechylenie}}}
-        & kwadrat & 00:03.113 & 00:06.254 & 00:06.285 \\
-        \cline{2-5}
-        & koło & 00:05.658 & 00:05.568 & 00:05.753 \\
-        \cline{2-5}
-        & trójkąt & 00:14.188 & 00:14.188 & 00:04.518 \\
-        \cline{2-5}
-        & gwiazda & 00:08.886 & 00:03.590 & 00:13.652 \\
+        & kwadrat & 00:03.113 & \footnotesize{(0.495)} & 00:06.254 & \footnotesize{(0.995)} & 00:06.285 & \footnotesize{(1.000)} \\
+        \cline{2-8}
+        & koło & 00:05.658 & \footnotesize{(0.983)} & 00:05.568 & \footnotesize{(0.968)} & 00:05.753 & \footnotesize{(1.000)} \\
+        \cline{2-8}
+        & trójkąt & 00:14.188 & \footnotesize{(1.000)} & 00:14.188 & \footnotesize{(1.000)} & 00:04.518 & \footnotesize{(0.318)} \\
+        \cline{2-8}
+        & gwiazda & 00:08.886 & \footnotesize{(0.651)} & 00:03.590 & \footnotesize{(0.263)} & 00:13.652 & \footnotesize{(1.000)} \\
         \hline
         \hline
         \multirow{4}{*}{\rotatebox[origin=c]{90}{\textbf{Przybliżenie}}}
-        & kwadrat & 00:17.115 & 00:17.115 & 00:17.115 \\
-        \cline{2-5}
-        & koło & 00:08.984 & 00:09.150 & 00:08.921 \\
-        \cline{2-5}
-        & trójkąt & 00:04.483 & 00:15.498 & 00:15.498 \\
-        \cline{2-5}
-        & gwiazda & 00:04.558 & 00:04.590 & 00:14.308 \\
+        & kwadrat & 00:17.115 & \footnotesize{(1.000)} & 00:17.115 & \footnotesize{(1.000)} & 00:17.115 & \footnotesize{(1.000)} \\
+        \cline{2-8}
+        & koło & 00:08.984 & \footnotesize{(0.982)} & 00:09.150 & \footnotesize{(1.000)} & 00:08.921 & \footnotesize{(0.975)} \\
+        \cline{2-8}
+        & trójkąt & 00:04.483 & \footnotesize{(0.289)} & 00:15.498 & \footnotesize{(1.000)} & 00:15.498 & \footnotesize{(1.000)} \\
+        \cline{2-8}
+        & gwiazda & 00:04.558 & \footnotesize{(0.319)} & 00:04.590 & \footnotesize{(0.321)} & 00:14.308 & \footnotesize{(1.000)} \\
         \hline
     \end{tabularx}
-    \caption{Wyniki przeprowadzonych prób czasowych}
+    \caption{Wyniki przeprowadzonych prób czasowych.
+    W~nawiasach stosunek do~najlepszego wyniku w~obrębie danego wiersza.}
     \label{tab:time-trials}
 \end{table}
+
+Dla~każdego z~uzyskanych czasów obliczony został jego stosunek do~najlepszego wyniku uzyskanego przez~klasyfikatory w~danej próbie.
+W~tabeli \ref{tab:average-ratio} widoczny jest średni stosunek do~najlepszego wyniku z~wszystkich prób dla~poszczególnych klasyfikatorów.
+
+\begin{table}[H]
+    \centering
+    \begin{tabularx}{0.6\textwidth}{|l|Y|}
+        \hline
+        \textbf{Klasyfikator} & \textbf{Średni stosunek} \\
+        \hline
+        geometric & 0.833 \\
+        \hline
+        network (vec) & 0.888 \\
+        \hline
+        network (conv) & 0.956 \\
+        \hline
+    \end{tabularx}
+    \caption{Uśrednione wyniki względne z~prób przedstawionych w~tabeli \ref{tab:time-trials}}
+    \label{tab:average-ratio}
+\end{table}
+
+W~teście empirycznym najlepiej zaprezentowała~się sieć konwolucyjna, ze~względu na~największą stabilność działania.
 
 \section{Podsumowanie}
 
