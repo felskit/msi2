@@ -3,7 +3,7 @@ from src.classifiers.network import NetworkClassifier
 from src.common.config import config
 from src.common.extractor import ShapeExtractor
 from src.data.types import FillMode, ShapeType
-
+from timeit import default_timer as timer
 import argparse
 import cv2
 import numpy as np
@@ -35,8 +35,10 @@ arguments = parser.parse_args()
 if not os.path.isdir(arguments.directory):
     raise ValueError("Supplied path is not a directory")
 
-lower = np.array([240])
-upper = np.array([255])
+
+print("Current classifier: " + arguments.classifier)
+lower = np.array([0])
+upper = np.array([15])
 image_size = config["image_size"]
 extractor = ShapeExtractor(lower, upper, image_size)
 if arguments.classifier == "geometric":
@@ -51,7 +53,11 @@ elif arguments.classifier == "convolutional-network":
 else:
     raise ValueError
 
+start = timer()
 for subdir, _, files in os.walk(arguments.directory):
+    if not files:
+        continue
+    print("Current shape: " + subdir[subdir.rfind("\\") + 1:])
     results = {
         ShapeType.TRIANGLE: 0,
         ShapeType.SQUARE: 0,
@@ -69,4 +75,5 @@ for subdir, _, files in os.walk(arguments.directory):
     print("Summary:")
     for key, value in results.items():
         print('\t{:20} - {:2} occurrences'.format(key or "Other", value))
-    break  # don't walk the directory tree further
+end = timer()
+print("Elapsed: " + str(end - start) + "s")

@@ -7,12 +7,16 @@
 \usepackage{subcaption}
 \usepackage{float}
 \usepackage{tabularx}
+\usepackage{multirow}
 \usepackage{graphicx}
+\usepackage{geometry}
+\usepackage[table,dvipsnames]{xcolor}
 \usepackage[hidelinks]{hyperref}
 \usepackage[polish]{babel}
 \usepackage{menukeys}
 
 \def\arraystretch{1.5}
+\newcolumntype{Y}{>{\centering\arraybackslash}X}
 \renewcommand{\thesection}{\arabic{section}.}
 \renewcommand{\thesubsection}{\thesection\arabic{subsection}.}
 \renewcommand{\thesubsubsection}{\thesubsection\arabic{subsubsection}.}
@@ -192,8 +196,8 @@ Wykonanie skryptu rozpocznie proces uczenia sieci, który może potrwać do~kilk
 W~wyniku działania skryptu w~bieżącym katalogu zostanie stworzony podkatalog \verb+model+, zawierający dwa pliki:
 
 \begin{itemize}
-    \item Plik \verb+shapes_model_1d_vec.h5+ zawiera model dla~sieci neuronowej operującej na~spłaszczonym obrazie.
-    \item Plik \verb+shapes_model_2d_img.h5+ zawiera model dla~konwolucyjnej sieci neuronowej.
+    \item Plik \verb+shapes_model_1d_vec.h5+ zawiera model dla~sieci neuronowej operującej na~spłaszczonym obrazie wytrenowany przy użyciu 50 epok.
+    \item Plik \verb+shapes_model_2d_img.h5+ zawiera model dla~konwolucyjnej sieci neuronowej wytrenowany przy użyciu 25 epok.
 \end{itemize}
 
 \subsection{Testy na~obrazach wczytywanych z~pliku}
@@ -239,33 +243,176 @@ Dokładny opis wszystkich opcji znajduje~się poniżej.
     \end{itemize}
     \item Za~pomocą skryptu można wykonać próbę czasową wszystkich klasyfikatorów dla~ustalonego rodzaju kształtu.
     Dla~każdego klasyfikatora liczony jest czas poprawnej klasyfikacji.
-    Czas zatrzymywany jest, jeśli klasyfikator przez dłużej niż~24~klatki (1~sekundę) nie~rozpoznaje kształtu lub~rozpoznaje go~błędnie.
+    Czas zatrzymywany jest, jeśli klasyfikator przez dłużej niż~8~klatek podejmował próbę rozpoznania kształtu i rozpoznawał inny kształt niż był ustawiony obecnie oczekiwany lub gdy stwierdził, że wykryty obszar nie zawiera żadnego ze znanych mu kształtów.
     \begin{itemize}
-        \item Klawisze \keys{Z}, \keys{X}, \keys{C}, \keys{V} ustawiają docelowy rodzaj kształtu.
+        \item Klawisze \keys{Z}, \keys{X}, \keys{C}, \keys{V} pozwalają zmienić rodzaj kształtu.
         \begin{itemize}
-            \item Wciśnięcie klawisza \keys{Z} oznacza, że rozpoznawane będą kwadraty.
-            \item Wciśnięcie klawisza \keys{X} oznacza, że rozpoznawane będą gwiazdy.
-            \item Wciśnięcie klawisza \keys{C} oznacza, że rozpoznawane będą koła.
-            \item Wciśnięcie klawisza \keys{V} oznacza, że rozpoznawane będą trójkąty.
+            \item Wciśnięcie klawisza \keys{Z} spowoduje, że oczekiwanym kształtem będzie kwadrat.
+            \item Wciśnięcie klawisza \keys{X} spowoduje, że oczekiwanym kształtem będzie gwiazda.
+            \item Wciśnięcie klawisza \keys{C} spowoduje, że oczekiwanym kształtem będzie koło.
+            \item Wciśnięcie klawisza \keys{V} spowoduje, że oczekiwanym kształtem będzie trójkąt.
         \end{itemize}
-        \item Klawisz \keys{A} powoduje rozpoczęcie liczenia czasu.
-        \item Klawisz \keys{S} powoduje zatrzymanie rozpoczętej próby.
-        \item Klawisz \keys{R} powoduje zrestartowanie próby.
+        \item Klawisz \keys{A} powoduje rozpoczęcie próby czasowej.
+        \item Klawisz \keys{S} powoduje zatrzymanie rozpoczętej próby czasowej.
+        \item Klawisz \keys{R} powoduje zrestartowanie próby czasowej.
     \end{itemize}
     Podczas trwania próby można zarówno zmieniać docelowy typ rozpoznawanego kształtu, jak i~przełączać podgląd wyników klasyfikatora między dostępnymi opcjami.
     \item Klawisz \keys{H} powoduje wyświetlenie pomocy na~ekranie.
     \item Klawisz \keys{D} powoduje włączenie trybu \emph{debug}.
-    W~tym trybie w~osobnych oknach na~ekranie wyświetlane~są rozpoznawane po~progowaniu kontury, a na~konsoli wyświetlane są: średni, minimalny i maksymalny czas działania poszczególnych klasyfikatorów.
+    W~tym trybie w~osobnym oknie na~ekranie wyświetlane~są rozpoznawane po~progowaniu kontury, a na~konsoli wyświetlane są: średni, minimalny i maksymalny czas działania poszczególnych klasyfikatorów.
     \item Klawisz \keys{Q} powoduje zakończenie działania skryptu.
 \end{itemize}
 
 \section{Wyniki eksperymentalne}
 
+TODO sranie do ryja
+
 \subsection{Kryteria oceny klasyfikatorów}
+
+Ocenie zdecydowano się poddać kilka kryteriów. Wyniki klasyfikacji postanowiono zbadać poprzez wyznaczenie dokładności \emph{(ang. accuracy)}, która jest jedną z miar oceny jakości klasyfikacji. Wydajność klasyfikatorów zweryfikowano mierząc czas wywołań klasyfikacji dla każdego z~nich. Ponadto klasyfikatory poddano próbie bardziej empirycznej, polegającej na teście w czasie rzeczywistym. 
+
+\subsubsection{Dokładność}
+
+Dokładność jest najbardziej intuicyjnym pojęciem pozwalającym na zmierzenie rozumianej przez nas skuteczności klasyfikatora. Dokładność jest bowiem stosunkiem liczby poprawnych klasyfikacji do liczności całej badanej populacji.
+
+Dla każdego obrazu ze zbioru \cite{shapes} uruchomiono klasyfikację kształtu przy pomocy klasyfikatora geometrycznego i każdej z sieci neuronowych. Następnie zgodnie z definicją dokładności zliczono poprawne wyniki i wyznaczono szukany współczynnik.
+
+W przypadku rozpatrywanych sieci neuronowych dokładność jest dodatkowo jedną z miar wypisywanych na ekran w trybie \emph{verbose} podczas treningu. Podczas trenowania zbiór danych wejściowych dzielony jest na dwa zbiory -- co piąty element odkładany jest na bok do zbioru testowego. Zbiór treningowy zawiera wobec tego 80\% obrazów, a po każdej epoce następuje walidacja obecnego stanu sieci przy pomocy pozostałych 20\% obrazów. Na samym końcu treningu wykonywana jest ewaluacja wytrenowanego modelu, w celu ustalenia ostatecznej dokładności klasyfikacji na zbiorze testowym.
+
+\subsubsection{Wydajność}
+
+Stworzony na potrzeby projektu skrypt \verb+capture.py+ pozwala na włączenie trybu \emph{debug}, dzięki któremu wyniki wydajnościowe każdego klasyfikatora są wypisywane na ekran. Podawane są~wartości takie jak:
+\begin{itemize}
+    \item minimalny czas klasyfikacji od początku działania skryptu,
+    \item maksymalny czas klasyfikacji od początku działania skryptu,
+    \item średni czas klasyfikacji od początku działania skryptu.
+\end{itemize}
+Zdecydowano się nie liczyć mediany, ponieważ wymagałoby to pamiętania wszystkich czasów klasyfikacji, co negatywnie wpłynęło by na zużycie pamięci.
+
+\subsubsection{Próba czasowa}
+
+W tym teście zbadano zachowanie wszystkich trzech jednocześnie w tym samym scenariuszu -- rozpoznawaniu kształtów w czasie rzeczywistym na strumieniu wideo. Wykorzystano w tym celu opisywany wcześniej skrypt \verb+capture.py+, który skonfigurowano na rozpoznawanie konkretnego kształtu i uruchomiono próbę czasową. Zadaniem jest poprawna klasyfikacja pokazywanego kształtu przez jak najdłuższy okres czasu, przy czym dopuszcza się pomyłkę nie dłużej niż 8 klatek z rzędu. W przeciwnym przypadku czas przestaje być mierzony dla danego klasyfikatora.
 
 \subsection{Uzyskane wyniki}
 
+W poniższym podrozdziale opisano wyniki uzyskane przy pomocy opisanych powyżej testów.
+
+\subsubsection{Dokładność}
+
+W zbiorze \cite{shapes} znajduje się 14970 obrazów -- 3720 kół, 3765 kwadratów, 3765 gwiazd i 3720 trójkątów. Dla każdego z klasyfikatorów wyznaczono dokładność uruchamiając proces klasyfikacji na każdym z obrazów przy pomocy skryptu \verb+image_test.py+ i zliczając stosunek poprawnych dopasowań do liczby wszystkich prób. Wyniki wyglądają następująco:
+\begin{itemize}
+    \item Klasyfikator geometryczny zakwalifikował poprawnie 14911 kształtów, co daje dokładność na poziomie 0.9961 w przybliżeniu. Tym razem najgorzej wypadły trójkąty -- były tam aż~153 pomyłki.
+    \item Klasyfikator korzystający z sieci neuronowej klasyfikującej wektory zidentyfikował poprawnie 14813 kształtów, co daje dokładność na poziomie 0.9895 w przybliżeniu. Najwięcej -- bo aż 46 -- błędów zostało popełnionych w przypadku klasyfikacji gwiazd.
+    \item Klasyfikator korzystający z konwolucyjnej sieci neuronowej rozpoznał poprawnie 14915 kształtów, co daje dokładność na poziomie 0.9963 w przybliżeniu. Podobnie jak poprzednio, najgorzej wypadły trójkąty, jednak tym razem pomyłek było mniej, bo zaledwie 53.
+\end{itemize}
+
+Warto zauważyć, że poza siedmioma przypadkami błędnej identyfikacji trójkątów jako kwadraty i~gwiazdy przez sieć konwolucyjną, nie wystąpiły żadne błędy pierwszego typu \emph{(ang. false positive errors)}. Wszystkie pozostałe błędy dotyczyły nierozpoznania kształtu całkowicie.
+
+Jak już wcześniej zostało wspomniane, dokładność była także wypisywana na ekran w trakcie treningu sieci neuronowych. Wartość wyznaczona podczas ewaluacji wytrenowanego modelu w~przypadku sieci klasyfikującej wektory to 0.9980, natomiast dla sieci konwolucyjnej zwrócona wartość była 1.0 (wyniosła tyle już po 17-tej z 25 epok).
+
+\subsubsection{Wydajność}
+
+Wydajność każdej z metod klasyfikacji zmierzono na dwa sposoby. Pierwszym źródłem wyników był wykorzystany do badania dokładności skrypt \verb+image_test.py+, w którym zmierzono upływ czasu klasyfikacji wszystkich 14970 obrazów łącznie z ich obróbką przez ekstrator. Otrzymane wyniki są następujące:
+\begin{itemize}
+    \item Klasyfikator geometryczny skończył klasyfikację obrazów w 28.66s, co daje w przybliżeniu średnio 0.0019s na obróbkę i klasyfikację każdego kształtu.
+    \item Klasyfikator korzystający z sieci neuronowej klasyfikującej wektory skończył klasyfikację obrazów w 43.67s, co daje w przybliżeniu średnio 0.0029s na obróbkę i klasyfikację każdego kształtu.
+    \item Klasyfikator korzystający z konwolucyjnej sieci neuronowej skończył klasyfikację obrazów w 48.53s, co daje w przybliżeniu średnio 0.0032s na obróbkę i klasyfikację każdego kształtu.
+\end{itemize}
+
+Drugim źródłem wyników był działający w trybie \emph{debug} skrypt \verb+capture.py+. Dla każdego z klasyfikatorów otrzymano następujące wyniki klasyfikacji pojedynczego kształtu (bez obróbki wstępnej):
+\begin{itemize}
+    \item Klasyfikator geometryczny:
+    \begin{itemize}
+        \item najkrótszy czas klasyfikacji wyniósł 0.000018s,
+        \item najdłuższy czas klasyfikacji wyniósł 0.001961s,
+        \item średni czas klasyfikacji wyniósł 0.000086s.
+    \end{itemize}
+    \item Klasyfikator korzystający z sieci neuronowej klasyfikującej wektory:
+    \begin{itemize}
+        \item najkrótszy czas klasyfikacji wyniósł 0.000981s,
+        \item najdłuższy czas klasyfikacji wyniósł 0.022804s,
+        \item średni czas klasyfikacji wyniósł 0.001918s.
+    \end{itemize}
+    \item Klasyfikator korzystający z konwolucyjnej sieci neuronowej:
+    \begin{itemize}
+        \item najkrótszy czas klasyfikacji wyniósł 0.001086s,
+        \item najdłuższy czas klasyfikacji wyniósł 0.035751s,
+        \item średni czas klasyfikacji wyniósł 0.002212s.
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{Próba czasowa}
+
+Testom poddano każdy z kształtów osobno przy dodatkowym zastosowaniu różnych utrudnień, którymi są:
+\begin{itemize}
+    \item translacja kształtu,
+    \item obrót kształtu,
+    \item przechylenie kształtu,
+    \item przybliżenie kształtu.
+\end{itemize}
+
+Wyniki wykonanych prób czasowych znajdują się w tabeli poniżej. Kolumny oznaczone jako \emph{geometric}, \emph{network (vec)} oraz \emph{network (conv)} odpowiadają odpowiednio klasyfikatorom: geometrycznemu, opartego na sieci neuronowej klasyfikującej wektory oraz na sieci konwolucyjnej.
+
+\begin{table}[H]
+    \begin{tabularx}{\textwidth}{|c|c|Y|Y|Y|}
+        \hline
+        \textbf{Test} & \textbf{Kształt} & \textbf{geometric} & \textbf{network (vec)} & \textbf{network (conv)} \\
+        \hline
+        \hline
+        \multirow{4}{*}{\rotatebox[origin=c]{90}{\textbf{Translacja}}}
+        & kwadrat & 00:14.368 & 00:14.368 & 00:14.368 \\
+        \cline{2-5}
+        & koło & 00:16.493 & 00:16.493 & 00:16.493 \\
+        \cline{2-5}
+        & trójkąt & 00:13.210 & 00:13.210 & 00:13.210 \\
+        \cline{2-5}
+        & gwiazda & 00:14.480 & 00:14.480 & 00:14.480 \\
+        \hline
+        \hline
+        \multirow{4}{*}{\rotatebox[origin=c]{90}{\textbf{Obrót}}}
+        & kwadrat & 00:17.291 & 00:17.291 & 00:17.291 \\
+        \cline{2-5}
+        & koło & 00:17.936 & 00:17.936 & 00:17.936 \\
+        \cline{2-5}
+        & trójkąt & 00:18.347 & 00:18.347 & 00:18.347 \\
+        \cline{2-5}
+        & gwiazda & 00:10.154 & 00:10.231 & 00:15.575 \\
+        \hline
+    \end{tabularx}
+\end{table}
+\begin{table}[H]
+    \begin{tabularx}{\textwidth}{|c|c|Y|Y|Y|}
+        \hline
+        \textbf{Test} & \textbf{Kształt} & \textbf{geometric} & \textbf{network (vec)} & \textbf{network (conv)} \\
+        \hline
+        \hline
+        \multirow{4}{*}{\rotatebox[origin=c]{90}{\textbf{Przechylenie}}}
+        & kwadrat & 00:03.113 & 00:06.254 & 00:06.285 \\
+        \cline{2-5}
+        & koło & 00:05.658 & 00:05.568 & 00:05.753 \\
+        \cline{2-5}
+        & trójkąt & 00:14.188 & 00:14.188 & 00:04.518 \\
+        \cline{2-5}
+        & gwiazda & 00:08.886 & 00:03.590 & 00:13.652 \\
+        \hline
+        \hline
+        \multirow{4}{*}{\rotatebox[origin=c]{90}{\textbf{Przybliżenie}}}
+        & kwadrat & 00:17.115 & 00:17.115 & 00:17.115 \\
+        \cline{2-5}
+        & koło & 00:08.984 & 00:09.150 & 00:08.921 \\
+        \cline{2-5}
+        & trójkąt & 00:04.483 & 00:15.498 & 00:15.498 \\
+        \cline{2-5}
+        & gwiazda & 00:04.558 & 00:04.590 & 00:14.308 \\
+        \hline
+    \end{tabularx}
+    \caption{Wyniki przeprowadzonych prób czasowych}
+    \label{tab:time-trials}
+\end{table}
+
 \section{Podsumowanie}
+
+TODO sranie do ryja wszystko szybkie jak siemano i real time ez pz
 
 \subsection{Możliwości dalszych badań}
 
