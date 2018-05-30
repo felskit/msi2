@@ -12,17 +12,19 @@ import numpy as np
 def create_time_trial_classifier(model, name, draw, color, fill_mode):
     return {
         'active': False,
+        'classify_count': 0,
+        'classify_max': -999
+        'classify_min': 999,
+        'classify_sum': 0,
         'color': color,
+        'correct_frames': 0,
         'draw': draw,
+        'fill_mode': fill_mode,
         'frame_counter': 0,
+        'invalid_frames': 0,
         'model': model,
         'name': name,
         'timer': zero_timer,
-        'fill_mode': fill_mode,
-        'classify_count': 0,
-        'classify_sum': 0,
-        'classify_min': 999,
-        'classify_max': -999
     }
 
 
@@ -33,19 +35,21 @@ def switch_drawn_classifier(active_classifiers, index):
 
 def reset_state(active_classifiers):
     for c in active_classifiers:
-        c['timer'] = zero_timer
-        c['frame_counter'] = 0
+        c['active'] = True
         c['classify_count'] = 0
-        c['classify_sum'] = 0
-        c['classify_min'] = 999
         c['classify_max'] = -999
+        c['classify_min'] = 999
+        c['classify_sum'] = 0
+        c['correct_frames'] = 0
+        c['invalid_frames'] = 0
+        c['timer'] = zero_timer
 
 
 def format_timer(time_from, time_to):
     elapsed = time_to - time_from
     return str(int(elapsed / 60)).zfill(2) \
        + ':' + str(int(elapsed) % 60).zfill(2) \
-       + '.' + str(int((elapsed - int(elapsed)) * 1000))
+       + '.' + '{:<03}'.format(int((elapsed - int(elapsed)) * 1000))
 
 
 time_start = None
@@ -66,21 +70,21 @@ geometric_classifier = create_time_trial_classifier(
     model=GeometricClassifier(),
     name='geometric',
     draw=False,
-    color=(127, 127, 0),
+    color=(210, 210, 105),
     fill_mode=FillMode.WHITE_ON_BLACK
 )
 network_classifier_1d_vec = create_time_trial_classifier(
     model=NetworkClassifier(model_dir="./model/shapes_model_1d_vec.h5", flatten=True),
     name='network-1d-vec',
     draw=False,
-    color=(0, 127, 127),
+    color=(105, 210, 210),
     fill_mode=FillMode.BLACK_ON_WHITE
 )
 network_classifier_2d_img = create_time_trial_classifier(
     model=NetworkClassifier(model_dir="./model/shapes_model_2d_img.h5", flatten=False),
     name='network-2d-img',
     draw=True,
-    color=(127, 0, 127),
+    color=(210, 105, 210),
     fill_mode=FillMode.BLACK_ON_WHITE
 )
 classifiers = [geometric_classifier, network_classifier_1d_vec, network_classifier_2d_img]
@@ -107,7 +111,6 @@ while capture.running:
                     show_preview = debug_active & classifier['draw']
                     result = classifier['model'].classify(region, verbose=show_preview)
                     classify_end = timer()
-                    # TODO: possibly move this to debug_active (but then lose stats when inactive)
                     classify_current = classify_end - classify_start
                     classifier['classify_count'] += 1
                     classifier['classify_sum'] += classify_current
@@ -127,12 +130,15 @@ while capture.running:
                         capture.draw_recognized_region(region, result, color=classifier['color'])
                     if time_trial_active:
                         if result != expected_shape:
-                            classifier['frame_counter'] += 1
+                            classifier['invalid_frames'] += 1
                         else:
-                            classifier['frame_counter'] = 0
-                        if classifier['frame_counter'] > mistake_limit:
+                            classifier['correct_frames'] += 1
+                            classifier['invalid_frames'] = 0
+                        if classifier['invalid_frames'] > mistake_limit:
                             classifier['active'] = False
+            capture.draw_frames(i, classifier['correct_frames'], color=classifier['color'])
         capture.draw_shape(expected_shape)
+        capture.draw_overall_timer(new_timer)
         capture.show_frame()
         key_code = cv2.waitKey(1) & 0xff
         if key_code == ord('q'):
@@ -144,18 +150,19 @@ while capture.running:
         elif key_code == ord('3'):
             switch_drawn_classifier(classifiers, 2)
         elif key_code == ord('a'):
-            time_start = timer()
             time_trial_active = True
-            for classifier in classifiers:
-                classifier['active'] = True
+            time_start = timer()
             reset_state(classifiers)
         elif key_code == ord('s'):
-            time_start = None
             time_trial_active = False
+            time_start = None
             for classifier in classifiers:
                 classifier['active'] = False
         elif key_code == ord('r'):
-            time_start = timer()
+            if time_trial_active:
+                time_start = timer()
+            else:
+                time_start = None
             new_timer = zero_timer
             reset_state(classifiers)
         elif key_code == ord('z'):

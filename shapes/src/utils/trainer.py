@@ -64,12 +64,14 @@ class NetworkTrainer:
         images = np.array(images)
         return images.reshape(len(images), self.image_shape[0], self.image_shape[1], 1)
 
-    def load_data(self, data_dir):
+    def load_data(self, data_dir, train_size):
         """
         Initializes the trainer with training data.
 
         :param data_dir: Directory to training data set.
         :type data_dir: str
+        :param train_size: Size of the training data set to be extracted.
+        :type train_size: float
         :return: A tuple of training images shape and number of classes.
         :rtype: tuple
         """
@@ -88,18 +90,28 @@ class NetworkTrainer:
         self.train_images, self.test_images = [], []
         self.train_labels, self.test_labels = [], []
 
-        to_train = 0
+        training_set_bigger = train_size > 0.5
+        if training_set_bigger:
+            batch_size = int(train_size / (1 - train_size))
+        else:
+            batch_size = int((1 - train_size) / train_size)
+
+        counter = 0
         image_label_pairs = list(zip(images, labels))
         shuffle(image_label_pairs)
         for image, label in image_label_pairs:
-            if to_train < 5:
+            if counter < batch_size:
                 self.train_images.append(image)
                 self.train_labels.append(label)
-                to_train += 1
+                counter += 1
             else:
                 self.test_images.append(image)
                 self.test_labels.append(label)
-                to_train = 0
+                counter = 0
+
+        if not training_set_bigger:  # swap since we were assigning the other way around
+            self.train_images, self.test_images = self.test_images, self.train_images
+            self.train_labels, self.test_labels = self.test_labels, self.train_labels
 
         # normalize data (so that image pixels are in [0,1] range)
         self.train_images = self._normalize(self.train_images)

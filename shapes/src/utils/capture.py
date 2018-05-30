@@ -75,15 +75,39 @@ class CaptureWindow:
         """
         Draws the timer value on the screen.
 
-        :param index: Index of the timer's classifier.
+        :param index: Index of the classifier.
         :type index: int
         :param timer: Timer value string.
         :type timer: str
-        :param color: Color of the timer.
+        :param color: Color of the string.
         :type color: tuple
         :return: None
         """
         cv2.putText(self.frame, timer, (10, self.frame.shape[0] - 10 - index * 34), self.font, 1, color, 2)
+
+    def draw_overall_timer(self, timer):
+        """
+        Draws the overall timer value on the screen.
+
+        :param timer: Timer value string.
+        :type timer: str
+        :return: None
+        """
+        cv2.putText(self.frame, timer, (210, self.frame.shape[0] - 10 - 3 * 34), self.font, 1, (255, 255, 255), 2)
+
+    def draw_frames(self, index, frames, color):
+        """
+        Draws the number of frames on the screen.
+
+        :param index: Index of the classifier.
+        :type index: int
+        :param frames: Number of frames.
+        :type frames: int
+        :param color: Color of the string.
+        :type color: tuple
+        :return: None
+        """
+        cv2.putText(self.frame, str(frames), (210, self.frame.shape[0] - 10 - index * 34), self.font, 1, color, 2)
 
     def draw_help(self, color1, color2, color3):
         """
@@ -97,7 +121,7 @@ class CaptureWindow:
         :type color3: tuple
         :return: None
         """
-        x1, x2 = 10, 240
+        x1, x2, x3 = 10, 240, 470
         scale = 0.75
         color = (255, 255, 255)
         cv2.putText(self.frame, "Zmiana klasyfikatora:", (x1, 28), self.font, scale, color, 2)
@@ -113,8 +137,8 @@ class CaptureWindow:
         cv2.putText(self.frame, "A - Start", (x2, 28 * 7), self.font, scale, color, 2)
         cv2.putText(self.frame, "S - Stop", (x2, 28 * 8), self.font, scale, color, 2)
         cv2.putText(self.frame, "R - Restart", (x2, 28 * 9), self.font, scale, color, 2)
-        cv2.putText(self.frame, "D - Debug", (x2, 28 * 12), self.font, scale, color, 2)
-        cv2.putText(self.frame, "Q - Wyjscie", (x2, 28 * 13), self.font, scale, color, 2)
+        cv2.putText(self.frame, "D - Debug", (x3, 28 * 11), self.font, scale, color, 2)
+        cv2.putText(self.frame, "Q - Wyjscie", (x3, 28 * 12), self.font, scale, color, 2)
 
     def draw_shape(self, shape):
         """

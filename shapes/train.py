@@ -14,15 +14,26 @@ parser.add_argument(
     required=True,
     help="path to directory with training shapes"
 )
+parser.add_argument(
+    "-t",
+    "--train-size",
+    required=True,
+    help="fraction representing the size of the training set extracted from the provided data set "
+         "(e.g. 0.8 means that 80% of images are going to be used for training)"
+)
 arguments = parser.parse_args()
 
 if not os.path.isdir(arguments.directory):
     raise ValueError("Supplied path is not a directory")
 
+train_size = float(arguments.train_size)
+if not 0.0 < train_size <= 1.0:
+    raise ValueError("Supplied training set size is not a float from range (0, 1]")
+
 # load training data
 image_size = config["image_size"]
 trainer = NetworkTrainer(image_size)
-image_shape, classes = trainer.load_data(arguments.directory)
+image_shape, classes = trainer.load_data(arguments.directory, train_size)
 
 # define the model (for 1D vectors)
 model = Sequential()
