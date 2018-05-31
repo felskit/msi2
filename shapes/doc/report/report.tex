@@ -166,7 +166,7 @@ Ponadto, dla~każdego kształtu innego niż trójkąt, stosowane~są odpowiednie
     W~przypadku zbyt dużej różnicy kształt nie jest klasyfikowany.
 \end{itemize}
 
-\subsubsection{Klasyfikatory oparte na~sieciach neuronowych} % TODO: coś o doborze parametrów
+\subsubsection{Klasyfikatory oparte na~sieciach neuronowych}
 
 Klasyfikatory oparte na~sieciach były trenowane na~podstawie zbioru treningowego \cite{shapes}.
 Zostały opracowane dwa warianty sieci, operujące na~obrazie wejściowym rozmiarów $64 \times 64$:
@@ -178,8 +178,62 @@ Zostały opracowane dwa warianty sieci, operujące na~obrazie wejściowym rozmia
 
     Warstwa wyjściowa jako funkcji aktywacji używa funkcji \emph{softmax}.
     \item Drugi wariant korzysta z~pojedynczej warstwy konwolucyjnej z~rozmiarem okna $8 \times 8$ oraz warstwy \emph{dropout}.
-    Wynik warstwy konwolucyjnej jest spłaszczany i~dostarczany do~warstwy wyjściowej z~funkcją \emph{softmax}.
+    Wynik warstwy konwolucyjnej jest spłaszczany i~dostarczany do~warstwy wyjściowej z~funkcją \emph{softmax}, w~celu znormalizowania wartości wyjściowej do~przedziału $[0,1]$.
 \end{itemize}
+
+Głównymi dobieranymi parametrami podczas treningu parametrami była liczba epok oraz~tzw. \emph{batch size}.
+Eksperymenty, których wyniki widoczne~są na~wykresie \ref{fig:epoch-batch-influence}, pokazują, że~mają one niewielki wpływ na~efektywność sieci.
+W~związku z~tym przyjęto wartości:
+\begin{itemize}
+    \item 50 epok i \emph{batch size} 256 --- dla sieci w~modelu płaskim,
+    \item 25 epok i \emph{batch size} 256 --- dla sieci w~modelu konwolucyjnym.
+\end{itemize}
+
+Oprócz weryfikacji wpływu parametrów na~efektywność klasyfikatorów zbadany został również wpływ procesów stochastycznych będących częścią treningu, tj.:
+\begin{itemize}
+    \item losowania początkowych wartości wag i \emph{bias},
+    \item losowego działania warstw \emph{dropout},
+    \item mieszania kolejności obrazów ze~zbioru testowego.
+\end{itemize}
+W~tym celu uruchomiono trening w~obu modelach dziesięciokrotnie i~zbadano wartości funkcji straty i~dokładności klasyfikacji.
+Wyniki zaprezentowane zostały na~wykresie \ref{fig:nondeterminism}.
+Patrząc na~wygląd wykresów, można wywnioskować, że~procesy niedeterministyczne mają mały wpływ na~działanie klasyfikatorów i~ich istnienie można w~dalszych rozważaniach pominąć.
+
+\begin{figure}
+    \centering
+    \begin{subfigure}{0.45\textwidth}
+        \includegraphics[width=\textwidth]{res/img/loss_conv.pdf}
+    \end{subfigure}
+    \qquad
+    \begin{subfigure}{0.45\textwidth}
+        \includegraphics[width=\textwidth]{res/img/acc_conv.pdf}
+    \end{subfigure}
+    \\
+    \begin{subfigure}{0.45\textwidth}
+        \includegraphics[width=\textwidth]{res/img/loss_vec.pdf}
+    \end{subfigure}
+    \qquad
+    \begin{subfigure}{0.45\textwidth}
+        \includegraphics[width=\textwidth]{res/img/acc_vec.pdf}
+    \end{subfigure}
+    \caption{Wykresy przedstawiające wpływ dobieranych parametrów (liczby epok i~\emph{batch size}) na~wartość funkcji straty i~dokładność klasyfikacji.
+    Na~wykresie przedstawiona wartość średnia z~trzech osobnych uruchomień dla~każdego zestawu parametrów.
+    Niedeterminizm został zminimalizowany poprzez ustalenie ziarna generatora liczb pseudolosowych.}
+    \label{fig:epoch-batch-influence}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \begin{subfigure}{0.45\textwidth}
+        \includegraphics[width=\textwidth]{res/img/randomness_loss.pdf}
+    \end{subfigure}
+    \qquad
+    \begin{subfigure}{0.45\textwidth}
+        \includegraphics[width=\textwidth]{res/img/randomness_accuracy.pdf}
+    \end{subfigure}
+    \caption{Wykresy pudełkowe przedstawiające wpływ niedeterminizmu w~procesie treningu sieci neuronowych w~obu modelach na~wartości funkcji straty i~dokładność klasyfikacji.}
+    \label{fig:nondeterminism}
+\end{figure}
 
 \section{Instrukcja użytkowania}
 
@@ -317,8 +371,14 @@ Warto zauważyć, że poza siedmioma przypadkami błędnej identyfikacji trójk�
 Jak już wspomniano wcześniej, dokładność była także wypisywana na ekran w trakcie treningu sieci neuronowych. Wartość wyznaczona podczas ewaluacji wytrenowanego modelu w~przypadku sieci klasyfikującej wektory to 0.9980, natomiast dla sieci konwolucyjnej zwrócona wartość była 1.0 (wyniosła tyle już po siedemnastej z 25 epok).
 
 Dodatkowo przeprowadzono eksperyment mający na celu sprawdzić wpływ wielkości zbioru treningowego na dokładność klasyfikacji przy użyciu klasyfikatorów opartych o~sieci neuronowe. Przetestowano wielkości: $[0.01, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.99]$, gdzie każdy z ułamków oznacza jak duża część obrazów ze zbioru \cite{shapes} zostanie użyta podczas treningu. Przykładowo, dla wielkości 0.8 będzie to 80\% obrazów.
+Wyniki eksperymentu przedstawia wykres~\ref{fig:test-train-proportions}.
 
-% TODO: INSERT CHART HERE
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{res/img/test-train-proportions.pdf}
+    \caption{Wykres przedstawiający wpływ stosunku liczności zbioru treningowego i~testowego na~dokładność klasyfikacji}
+    \label{fig:test-train-proportions}
+\end{figure}
 
 Łatwo zauważyć, że od wielkości zbioru treningowego wynoszącej około 150 zdjęć, wyniki są bardzo dobre i wszystkie na poziomie dokładności zbliżonym do 1.
 
