@@ -93,7 +93,7 @@ class CaptureWindow:
         :type timer: str
         :return: None
         """
-        cv2.putText(self.frame, timer, (210, self.frame.shape[0] - 10 - 3 * 34), self.font, 1, (255, 255, 255), 2)
+        cv2.putText(self.frame, timer, (10, self.frame.shape[0] - 10 - 3 * 34), self.font, 1, (255, 255, 255), 2)
 
     def draw_frames(self, index, frames, color):
         """
@@ -148,4 +148,4 @@ class CaptureWindow:
         :type shape: src.data.types.ShapeType
         :return: None
         """
-        cv2.putText(self.frame, shape.name, (10, self.frame.shape[0] - (34 * 3 + 10)), self.font, 1, (255, 255, 255), 2)
+        cv2.putText(self.frame, shape.name, (210, self.frame.shape[0] - (34 * 3 + 10)), self.font, 1, (255, 255, 255), 2)

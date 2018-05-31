@@ -13,7 +13,7 @@ def create_time_trial_classifier(model, name, draw, color, fill_mode):
     return {
         'active': False,
         'classify_count': 0,
-        'classify_max': -999
+        'classify_max': -999,
         'classify_min': 999,
         'classify_sum': 0,
         'color': color,
@@ -24,7 +24,7 @@ def create_time_trial_classifier(model, name, draw, color, fill_mode):
         'invalid_frames': 0,
         'model': model,
         'name': name,
-        'timer': zero_timer,
+        'timer': zero_timer
     }
 
 

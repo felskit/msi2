@@ -80,6 +80,7 @@ Dzięki tym dwóm algorytmom można na~podstawie binarnego obrazu wejściowego w
 Oprócz metod dokładnych, do~zagadnienia rozpoznawania można również użyć sieci neuronowych, które zamiast wiedzy dokładnej używają przygotowanych zbiorów treningowych oraz metod optymalizacji, aby~dokonać klasyfikacji.
 Celem badań jest porównanie wydajności i~skuteczności wybranych metod.
 
+\newpage
 \subsection{Wykorzystane techniki}
 
 Do~zaimplementowania klasyfikatorów użyty został język skryptowy \textbf{Python} w~wersji 3.5.2.
@@ -145,6 +146,9 @@ Ponieważ projekt zakłada, że kolor kształtów jest zadany z~góry, do~ekstra
 Pozwala ona na~zamianę obrazu w~kolorze na~obraz binarny.
 Progowanie wykonywane jest w~przestrzeni kolorów HSV, która dobrze odwzorowuje podobieństwo odcieni barw; wystarczy zdefiniować przedział dla~parametru H, który określa sąsiedztwo tonalne żądanego koloru.
 
+\newpage
+Komponent programu -- nazywany dalej ekstraktorem -- znajdujący figury na~obrazie i~wycinający je z~niego do~późniejszej analizy przez klasyfikatory jest niezależnym modułem. Wykorzystanie go we wszystkich klasyfikatorach pozwala wykluć jego wpływ na~jakość klasyfikacji w~przypadku każdego z klasyfikatorów.
+
 \subsubsection{Klasyfikator geometryczny}
 
 Główną ideą działania klasyfikatora geometrycznego jest dopasowanie łamanej zamkniętej do~rozpoznanego kształtu i~analiza kształtu tej łamanej.
@@ -162,7 +166,7 @@ Ponadto, dla~każdego kształtu innego niż trójkąt, stosowane~są odpowiednie
     W~przypadku zbyt dużej różnicy kształt nie jest klasyfikowany.
 \end{itemize}
 
-\subsubsection{Klasyfikatory oparte na~sieciach neuronowych}
+\subsubsection{Klasyfikatory oparte na~sieciach neuronowych} % TODO: coś o doborze parametrów
 
 Klasyfikatory oparte na~sieciach były trenowane na~podstawie zbioru treningowego \cite{shapes}.
 Zostały opracowane dwa warianty sieci, operujące na~obrazie wejściowym rozmiarów $64 \times 64$:
@@ -242,8 +246,8 @@ Dokładny opis wszystkich opcji znajduje~się poniżej.
         \item Klawisz \keys{3} powoduje przełączenie podglądu na~klasyfikator z~konwolucyjną siecią neuronową.
     \end{itemize}
     \item Za~pomocą skryptu można wykonać próbę czasową wszystkich klasyfikatorów dla~ustalonego rodzaju kształtu.
-    Dla~każdego klasyfikatora liczony jest czas poprawnej klasyfikacji.
-    Czas zatrzymywany jest, jeśli klasyfikator przez dłużej niż~8~klatek podejmował próbę rozpoznania kształtu i rozpoznawał inny kształt niż był ustawiony obecnie oczekiwany lub gdy stwierdził, że wykryty obszar nie zawiera żadnego ze znanych mu kształtów.
+    Dla~każdego klasyfikatora liczony jest czas poprawnej klasyfikacji oraz liczba klatek, na~której kształt został zidentyfikowany pomyślnie.
+    Czas zatrzymywany jest, jeśli klasyfikator przez dłużej niż~8~klatek podejmował próbę rozpoznania kształtu i rozpoznawał inny kształt niż był ustawiony obecnie oczekiwany lub gdy stwierdził, że wykryty obszar nie zawiera żadnego ze znanych mu kształtów. Zliczanie poprawnych klatek w~każdym klasyfikatorze nie zatrzymuje się wraz z~zatrzymaniem jego czasomierza. Analogicznie, ogólny czasomierz zatrzyma się tylko, jeżeli zatrzymana zostanie cała rozpoczęta próba czasowa.
     \begin{itemize}
         \item Klawisze \keys{Z}, \keys{X}, \keys{C}, \keys{V} pozwalają zmienić rodzaj kształtu.
         \begin{itemize}
@@ -274,11 +278,11 @@ Ocenie zdecydowano się poddać kilka kryteriów. Wyniki klasyfikacji postanowio
 
 \subsubsection{Dokładność}
 
-Dokładność jest najbardziej intuicyjnym pojęciem pozwalającym na zmierzenie szeroko rozumianej skuteczności klasyfikatora. Dokładność jest bowiem stosunkiem liczby poprawnych klasyfikacji do~liczby rozpoznawanych kształtów.
+Dokładność jest najbardziej intuicyjnym pojęciem pozwalającym na zmierzenie szeroko rozumianej skuteczności klasyfikatora. Dokładność jest bowiem stosunkiem liczby poprawnych klasyfikacji do~ogólnej liczby podjętych prób.
 
 Dla każdego obrazu ze zbioru \cite{shapes} uruchomiono klasyfikację kształtu przy pomocy klasyfikatora geometrycznego i każdej z sieci neuronowych. Następnie zgodnie z definicją dokładności zliczono poprawne wyniki i wyznaczono szukany współczynnik.
 
-W przypadku rozpatrywanych sieci neuronowych dokładność jest dodatkowo jedną z miar wypisywanych na ekran w trybie \emph{verbose} podczas treningu. Podczas trenowania zbiór danych wejściowych dzielony jest na dwa zbiory --- co piąty element odkładany jest na bok do zbioru testowego. Zbiór treningowy zawiera wobec tego 80\% obrazów, a po każdej epoce następuje walidacja obecnego stanu sieci przy pomocy pozostałych 20\% obrazów. Na samym końcu treningu wykonywana jest ewaluacja wytrenowanego modelu, w celu ustalenia ostatecznej dokładności klasyfikacji na zbiorze testowym.
+W przypadku rozpatrywanych sieci neuronowych dokładność jest dodatkowo jedną z~miar wypisywanych na ekran w trybie \emph{verbose} podczas treningu. Podczas trenowania zbiór danych wejściowych dzielony jest na dwa zbiory --- co piąty element dodawany jest do~zbioru testowego. Zbiór treningowy zawiera wobec tego 80\% obrazów, a po każdej epoce następuje walidacja obecnego stanu sieci przy pomocy pozostałych 20\% obrazów. Na samym końcu treningu wykonywana jest ewaluacja wytrenowanego modelu, w celu ustalenia ostatecznej dokładności klasyfikacji na zbiorze testowym.
 
 \subsubsection{Wydajność}
 
@@ -292,7 +296,7 @@ Zdecydowano się nie liczyć mediany, ponieważ wymagałoby to zapamiętania wsz
 
 \subsubsection{Próba czasowa}
 
-W~tym teście zbadano zachowanie wszystkich trzech klasyfikatorów jednocześnie w~tym samym scenariuszu, obejmującym rozpoznawanie kształtów w~czasie rzeczywistym na~strumieniu wideo. Wykorzystano w~tym celu opisywany wcześniej skrypt \verb+capture.py+, przy pomocy którego ustawiono na~rozpoznawanie konkretnego kształtu i~uruchomiono próbę czasową. Zadaniem jest poprawna klasyfikacja pokazywanego kształtu przez jak najdłuższy okres czasu, przy czym dopuszcza~się pomyłkę przez nie~dłużej niż 8~klatek z~rzędu. Zwrócenie błędnego wyniku przez dłużej niż~ustalony limit powoduje zakończenie pomiaru czasu dla~danego klasyfikatora.
+W~tym teście zbadano zachowanie wszystkich trzech klasyfikatorów jednocześnie w~tym samym scenariuszu, obejmującym rozpoznawanie kształtów w~czasie rzeczywistym na~strumieniu wideo. Wykorzystano w~tym celu opisywany wcześniej skrypt \verb+capture.py+, przy pomocy którego ustawiono na~rozpoznawanie konkretnego kształtu i~uruchomiono próbę czasową. Zadaniem jest poprawna klasyfikacja pokazywanego kształtu przez jak najdłuższy okres czasu, przy czym dopuszcza~się pomyłkę przez nie~dłużej niż 8~klatek z~rzędu. Zwrócenie błędnego wyniku przez dłużej niż~ustalony limit powoduje zakończenie pomiaru czasu dla~danego klasyfikatora. Dodatkowo podczas trwania próby dla każdego klasyfikatora zliczano klatki, na których doszło do poprawnej klasyfikacji w tym samym okresie czasu.
 
 \subsection{Uzyskane wyniki}
 
@@ -312,16 +316,22 @@ Warto zauważyć, że poza siedmioma przypadkami błędnej identyfikacji trójk�
 
 Jak już wspomniano wcześniej, dokładność była także wypisywana na ekran w trakcie treningu sieci neuronowych. Wartość wyznaczona podczas ewaluacji wytrenowanego modelu w~przypadku sieci klasyfikującej wektory to 0.9980, natomiast dla sieci konwolucyjnej zwrócona wartość była 1.0 (wyniosła tyle już po siedemnastej z 25 epok).
 
+Dodatkowo przeprowadzono eksperyment mający na celu sprawdzić wpływ wielkości zbioru treningowego na dokładność klasyfikacji przy użyciu klasyfikatorów opartych o~sieci neuronowe. Przetestowano wielkości: $[0.01, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.99]$, gdzie każdy z ułamków oznacza jak duża część obrazów ze zbioru \cite{shapes} zostanie użyta podczas treningu. Przykładowo, dla wielkości 0.8 będzie to 80\% obrazów.
+
+% TODO: INSERT CHART HERE
+
+Łatwo zauważyć, że od wielkości zbioru treningowego wynoszącej około 150 zdjęć, wyniki są bardzo dobre i wszystkie na poziomie dokładności zbliżonym do 1.
+
 \subsubsection{Wydajność}
 
-Wydajność każdej z metod klasyfikacji zmierzono na dwa sposoby. Pierwszym źródłem wyników był wykorzystany do badania dokładności skrypt \verb+image_test.py+, w którym zmierzono upływ czasu klasyfikacji wszystkich 14970 obrazów łącznie z ich obróbką przez ekstraktor (komponent programu znajdujący figury na~obrazie). Otrzymane wyniki są następujące:
+Wydajność każdej z metod klasyfikacji zmierzono na dwa sposoby. Pierwszym źródłem wyników był wykorzystany do badania dokładności skrypt \verb+image_test.py+, w którym zmierzono upływ czasu klasyfikacji wszystkich 14970 obrazów łącznie z ich obróbką przez ekstraktor. Otrzymane wyniki są następujące:
 \begin{itemize}
     \item Klasyfikator geometryczny skończył klasyfikację obrazów w 28.66s, co daje w przybliżeniu średnio 0.0019s na obróbkę i klasyfikację każdego kształtu.
     \item Klasyfikator korzystający z sieci neuronowej klasyfikującej wektory skończył klasyfikację obrazów w 43.67s, co daje w przybliżeniu średnio 0.0029s na obróbkę i klasyfikację każdego kształtu.
     \item Klasyfikator korzystający z konwolucyjnej sieci neuronowej skończył klasyfikację obrazów w 48.53s, co daje w przybliżeniu średnio 0.0032s na obróbkę i klasyfikację każdego kształtu.
 \end{itemize}
 
-Drugim źródłem wyników był działający w trybie \emph{debug} skrypt \verb+capture.py+. Dla każdego z klasyfikatorów otrzymano następujące wyniki klasyfikacji pojedynczego kształtu (bez obróbki wstępnej):
+Drugim źródłem wyników był działający w trybie \emph{debug} skrypt \verb+capture.py+. Dla każdego z klasyfikatorów otrzymano następujące wyniki klasyfikacji pojedynczego kształtu (bez wliczonej obróbki wstępnej):
 \begin{itemize}
     \item Klasyfikator geometryczny:
     \begin{itemize}
@@ -432,6 +442,7 @@ W~teście empirycznym najlepiej zaprezentowała~się sieć konwolucyjna, ze~wzgl
 
 Przeprowadzone eksperymenty pokazują, że~wszystkie zastosowane podejścia dość dobrze radzą sobie z~problemem rozpoznawania prostych kształtów.
 Zauważalne są jednak między nimi różnice w~dziedzinie wydajności i~efektywności.
+Mimo tego do klasyfikacji w~każdym przypadku dochodzi na tyle szybko, że przeprowadzanie jej dla wszystkich trzech klasyfikatorów jednocześnie w czasie rzeczywistym nie stanowi problemu.
 
 Klasyfikator oparty na~konturach wykazuje w~eksperymentach najkrótszy czas działania, lecz często działa dość niestabilnie, co~wykazała próba czasowa.
 Z~kolei sieci neuronowe mimo konieczności treningu na~wcześniej przygotowanym zbiorze oraz dłuższego czasu klasyfikacji, nadal mogą być używane do~rozpoznawania w~czasie rzeczywistym, i~działają mniej chaotycznie, niż podejście typowo geometryczne.

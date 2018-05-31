@@ -1,5 +1,5 @@
 from keras.utils import to_categorical
-from random import shuffle
+from random import shuffle, seed
 import cv2
 import numpy as np
 import os
@@ -90,28 +90,23 @@ class NetworkTrainer:
         self.train_images, self.test_images = [], []
         self.train_labels, self.test_labels = [], []
 
-        training_set_bigger = train_size > 0.5
-        if training_set_bigger:
-            batch_size = int(train_size / (1 - train_size))
-        else:
-            batch_size = int((1 - train_size) / train_size)
+        batch_size = 100
+        train_batch_part = train_size * batch_size
 
         counter = 0
         image_label_pairs = list(zip(images, labels))
         shuffle(image_label_pairs)
         for image, label in image_label_pairs:
-            if counter < batch_size:
+            if counter < train_batch_part:
                 self.train_images.append(image)
                 self.train_labels.append(label)
                 counter += 1
-            else:
+            elif counter < batch_size:
                 self.test_images.append(image)
                 self.test_labels.append(label)
+                counter += 1
+            else:
                 counter = 0
-
-        if not training_set_bigger:  # swap since we were assigning the other way around
-            self.train_images, self.test_images = self.test_images, self.train_images
-            self.train_labels, self.test_labels = self.test_labels, self.train_labels
 
         # normalize data (so that image pixels are in [0,1] range)
         self.train_images = self._normalize(self.train_images)
