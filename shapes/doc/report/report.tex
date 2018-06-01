@@ -381,21 +381,21 @@ Jak już wspomniano wcześniej, dokładność była także wypisywana na ekran w
 Dodatkowo przeprowadzono eksperyment mający na celu sprawdzić wpływ wielkości zbioru treningowego na dokładność klasyfikacji przy użyciu klasyfikatorów opartych o~sieci neuronowe. Przetestowano wielkości: $[0.01, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.99]$, gdzie każdy z ułamków oznacza jak duża część obrazów ze zbioru \cite{shapes} zostanie użyta podczas treningu. Przykładowo, dla wielkości 0.8 będzie to 80\% obrazów.
 Wyniki eksperymentu przedstawia wykres~\ref{fig:test-train-proportions}.
 
-\begin{figure}
+\begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{res/img/test-train-proportions.pdf}
     \caption{Wykres przedstawiający wpływ stosunku liczności zbioru treningowego i~testowego na~dokładność klasyfikacji}
     \label{fig:test-train-proportions}
 \end{figure}
 
-Łatwo zauważyć, że od wielkości zbioru treningowego wynoszącej około 150 zdjęć, wyniki są bardzo dobre i wszystkie na poziomie dokładności zbliżonym do 1.
+Łatwo zauważyć, że od wielkości zbioru treningowego wynoszącej około 150 zdjęć, co~odpowiada 10\% zbioru wejściowego, wyniki są bardzo dobre i wszystkie na poziomie dokładności zbliżonym do 1.
 
 \subsubsection{Wydajność}
 
 Wydajność każdej z metod klasyfikacji zmierzono na dwa sposoby. Pierwszym źródłem wyników był wykorzystany do badania dokładności skrypt \verb+image_test.py+, w którym zmierzono upływ czasu klasyfikacji wszystkich 14970 obrazów łącznie z ich obróbką przez ekstraktor. Otrzymane wyniki są następujące:
 \begin{itemize}
     \item Klasyfikator geometryczny skończył klasyfikację obrazów w 28.66s, co daje w przybliżeniu średnio 0.0019s na obróbkę i klasyfikację każdego kształtu.
-    \item Klasyfikator korzystający z sieci neuronowej klasyfikującej wektory skończył klasyfikację obrazów w 43.67s, co daje w przybliżeniu średnio 0.0029s na obróbkę i klasyfikację każdego kształtu.
+    \item Klasyfikator korzystający z sieci neuronowej klasyfikującej wektory skończył klasyfikację obrazów w 43.67s, co daje w przybliżeniu średnio 0.0029s na obróbkę i~klasyfikację każdego kształtu.
     \item Klasyfikator korzystający z konwolucyjnej sieci neuronowej skończył klasyfikację obrazów w 48.53s, co daje w przybliżeniu średnio 0.0032s na obróbkę i klasyfikację każdego kształtu.
 \end{itemize}
 
@@ -561,7 +561,7 @@ Wyniki względne z~tabel~\ref{tab:time-trials} i~\ref{tab:frame-count} zostały 
 \end{table}
 
 Wyniki testu empirycznego wskazują, że~klasyfikator geometryczny dość znacząco odstaje od~pozostałych, zarówno pod~względem czasu do~pierwszej pomyłki, jak~i~liczbie klatek, na~których kształt był rozpoznany.
-Klasyfikatory używające modeli sieci neuronowych mają zbliżone wyniki --- sieć konwolucyjna wydaje~się rozpoznawać kształty trochę~lepiej kosztem stabilności (większy odsetek rozpoznanych klatek, lecz krótszy czas do~błędu).
+Klasyfikatory używające modele sieci neuronowych mają zbliżone wyniki --- sieć konwolucyjna wydaje~się rozpoznawać kształty trochę~lepiej kosztem stabilności (większy odsetek rozpoznanych klatek, lecz krótszy czas do~błędu).
 
 \section{Podsumowanie}
 
