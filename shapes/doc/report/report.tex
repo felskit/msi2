@@ -246,9 +246,17 @@ Dokonuje on wyznaczenia modelu dla~sieci w~obu wariantach (spłaszczonym i~konwo
 Skrypt należy wywołać poleceniem
 \begin{verbatim}
 $ python train.py -d train-image-directory
+                  -t train-size
 \end{verbatim}
-gdzie \verb+train-image-directory+ oznacza katalog zawierający zbiór treningowy udostępniony w~\cite{shapes}.
-Obrazy w~zbiorze treningowym muszą zawierać czarne kształty na~białym tle.
+
+Skrypt przyjmuje następujące parametry:
+\begin{itemize}
+    \item \verb+train-image-directory+ oznacza katalog zawierający zbiór treningowy udostępniony w~\cite{shapes}.
+    Obrazy w~zbiorze treningowym muszą zawierać czarne kształty na~białym tle.
+    \item \verb+train-size+ określa stosunek liczności zbioru treningowego do~całości zbioru w~procesie uczenia sieci.
+    Przykładowo, podanie wartości \verb+-t 0.8+ spowoduje, że 80\% obrazów z~określonego folderu zostanie przydzielona do~zbioru treningowego, zaś pozostałe 20\% --- do~zbioru testowego.
+    Oczekiwaną wartością parametru jest liczba z~zakresu $[0, 1]$.
+\end{itemize}
 
 Wykonanie skryptu rozpocznie proces uczenia sieci, który może potrwać do~kilkunastu minut.
 W~wyniku działania skryptu w~bieżącym katalogu zostanie stworzony podkatalog \verb+model+, zawierający dwa pliki:
