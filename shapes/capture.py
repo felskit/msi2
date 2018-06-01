@@ -55,11 +55,12 @@ def format_timer(time_from, time_to):
 time_start = None
 zero_timer = '00:00.000'
 new_timer = zero_timer
-mistake_limit = 24
+mistake_limit = 4
 show_help = False
 debug_active = False
 time_trial_active = False
 expected_shape = ShapeType.SQUARE
+total_frames = 0
 
 capture = CaptureWindow(0)
 lower = np.array([0, 50, 50])
@@ -96,6 +97,8 @@ while capture.running:
     if read:
         if show_help:
             capture.draw_help(classifiers[0]['color'], classifiers[1]['color'], classifiers[2]['color'])
+        if time_trial_active:
+            total_frames += 1
         for i, classifier in enumerate(reversed(classifiers)):
             regions = extractor.get_regions(
                 frame,
@@ -138,7 +141,7 @@ while capture.running:
                             classifier['active'] = False
             capture.draw_frames(i, classifier['correct_frames'], color=classifier['color'])
         capture.draw_shape(expected_shape)
-        capture.draw_overall_timer(new_timer)
+        capture.draw_overall_timer(new_timer, total_frames)
         capture.show_frame()
         key_code = cv2.waitKey(1) & 0xff
         if key_code == ord('q'):
@@ -164,6 +167,7 @@ while capture.running:
             else:
                 time_start = None
             new_timer = zero_timer
+            total_frames = 0
             reset_state(classifiers)
         elif key_code == ord('z'):
             expected_shape = ShapeType.SQUARE

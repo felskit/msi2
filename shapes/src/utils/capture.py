@@ -85,7 +85,7 @@ class CaptureWindow:
         """
         cv2.putText(self.frame, timer, (10, self.frame.shape[0] - 10 - index * 34), self.font, 1, color, 2)
 
-    def draw_overall_timer(self, timer):
+    def draw_overall_timer(self, timer, frames):
         """
         Draws the overall timer value on the screen.
 
@@ -94,6 +94,7 @@ class CaptureWindow:
         :return: None
         """
         cv2.putText(self.frame, timer, (10, self.frame.shape[0] - 10 - 3 * 34), self.font, 1, (255, 255, 255), 2)
+        cv2.putText(self.frame, str(frames), (210, self.frame.shape[0] - 10 - 3 * 34), self.font, 1, (255, 255, 255), 2)
 
     def draw_frames(self, index, frames, color):
         """
@@ -148,4 +149,4 @@ class CaptureWindow:
         :type shape: src.data.types.ShapeType
         :return: None
         """
-        cv2.putText(self.frame, shape.name, (210, self.frame.shape[0] - (34 * 3 + 10)), self.font, 1, (255, 255, 255), 2)
+        cv2.putText(self.frame, shape.name, (10, self.frame.shape[0] - (34 * 4 + 10)), self.font, 1, (255, 255, 255), 2)
